@@ -3,6 +3,7 @@
     <color name="black">#1E1E1E</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#BB1020</color>
+    <color name="darkText">#333333</color>
 
 <!--    Palette Light-->
     <color name="grey">#F3F5F9</color>
