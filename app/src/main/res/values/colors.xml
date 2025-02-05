@@ -13,4 +13,7 @@
     <color name="darkNightGrey">#393939</color>
     <color name="lightNightGrey">#B5B5B5</color>
 
+    <color name="transparentBlack">#401E1E1E</color>
+    <color name="transparentGrey">#50000000</color>
+
 </resources>
