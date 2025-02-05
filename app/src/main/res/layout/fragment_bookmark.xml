@@ -32,7 +32,7 @@
 <!--        <include layout="@layout/fragment_havent_saved_anything"/>-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/bookmarkItems"
+            android:id="@+id/detail_item_constraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
