@@ -34,7 +34,6 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/bg_grey"
                 android:drawableStart="@drawable/search_icon"
-                android:drawableEnd="@drawable/vector_light"
                 android:drawablePadding="8dp"
                 android:elevation="3dp"
                 android:ems="10"
@@ -47,6 +46,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/cleanTxtBtn"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextText"
+                app:layout_constraintEnd_toEndOf="@+id/editTextText"
+                app:layout_constraintTop_toTopOf="@+id/editTextText"
+                app:srcCompat="@drawable/vector_light" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -84,7 +94,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <!--                            <include layout="@layout/fragment_category" />-->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/viewCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <!--            <include layout="@layout/fragment_category" />-->
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -99,6 +120,15 @@
 
                         <!--            <include layout="@layout/fragment_items"-->
                         <!--                <include layout="@layout/fragment_no_result_found"/>-->
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/viewPictures"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
