@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import ru.myapp.pexels_app.MainActivity
+import ru.myapp.pexels_app.activity.MainActivity
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.activity.BaseActivity
 

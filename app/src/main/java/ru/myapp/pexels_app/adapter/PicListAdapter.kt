@@ -1,32 +1,35 @@
 package ru.myapp.pexels_app.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.myapp.pexels_app.databinding.ViewholderItemBinding
+import ru.myapp.pexels_app.R
+import ru.myapp.pexels_app.model.PexelsResponse
 
-class PicListAdapter(val items: MutableList<String>, var picMin: ImageView): RecyclerView.Adapter<PicListAdapter.Viewholder>() {
+class PicListAdapter(val photos: List<PexelsResponse.Photo>) :
+    RecyclerView.Adapter<PicListAdapter.PhotoViewHolder>() {
 
-    private lateinit var context: Context
-
-    inner class Viewholder(val binding: ViewholderItemBinding): RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicListAdapter.Viewholder {
-        context = parent.context
-        val binding = ViewholderItemBinding.inflate(LayoutInflater.from(context), parent, false)
-        return Viewholder(binding)
+    inner class PhotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val imageView: ImageView = view.findViewById(R.id.picture)
     }
 
-    override fun onBindViewHolder(holder: PicListAdapter.Viewholder, position: Int) {
-
-        Glide.with(context)
-            .load(items[position])
-            .into(holder.binding.picList)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.viewholder_pic, parent, false)
+        return PhotoViewHolder(view)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+        val photo = photos[position]
+        Glide.with(holder.itemView.context)
+            .load(photo.src?.original)
+            .into(holder.imageView)
+
+    }
+
+    override fun getItemCount(): Int = photos.size
 
 }

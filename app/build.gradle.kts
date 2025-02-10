@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.room)
+
 }
 
 android {
@@ -55,18 +56,21 @@ dependencies {
     //room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     //retrofit
     implementation(libs.retrofit)
     implementation(libs.gson)
+    implementation(libs.converter.gson)
 
     //coroutine
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    //glide
     implementation(libs.glide)
-
-    implementation(libs.lottie)
+    annotationProcessor(libs.compiler)
 
     testImplementation(libs.junit)
 
