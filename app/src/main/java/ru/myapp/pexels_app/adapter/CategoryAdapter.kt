@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.myapp.pexels_app.databinding.ViewholderCategoryBinding
-import ru.myapp.pexels_app.model.CategoryModel
 
-class CategoryAdapter(val items: List<String>) :
+class CategoryAdapter(val headers: List<String>) :
     RecyclerView.Adapter<CategoryAdapter.Viewholder>() {
 
     inner class Viewholder(val binding: ViewholderCategoryBinding) :
@@ -19,10 +18,10 @@ class CategoryAdapter(val items: List<String>) :
     }
 
     override fun onBindViewHolder(holder: CategoryAdapter.Viewholder, position: Int) {
-        val item = items[position]
+        val item = headers[position]
 
         holder.binding.categoryTitle.text = item
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = headers.size
 }

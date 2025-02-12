@@ -4,5 +4,4 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.room) apply false
     alias(libs.plugins.jetbrains.kotlin.kapt) apply false
-
 }

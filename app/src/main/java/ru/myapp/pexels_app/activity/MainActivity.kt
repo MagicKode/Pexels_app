@@ -9,15 +9,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.myapp.pexels_app.adapter.CategoryAdapter
+import ru.myapp.pexels_app.adapter.CuratedAdapter
 import ru.myapp.pexels_app.adapter.PicListAdapter
 import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.ActivityMainBinding
+import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.PexelsResponse
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var curatedPicAdapter: CuratedAdapter
     private lateinit var picAdapter: PicListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +29,8 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         initCategories()
-        initPics("nature")
+        initCuratedPics()
+//        initSearchPics("cars")
     }
 
     private fun initCategories() {
@@ -52,7 +56,37 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun initPics(query: String) {
+    private fun initCuratedPics() {
+        binding.apply {
+            mainContent.progressBar.visibility = View.VISIBLE
+
+            RetrofitClient.instance.getCuratedPicList(1, 30)
+                .enqueue(object : Callback<CuratedPicsResponse> {
+                    override fun onResponse(
+                        call: Call<CuratedPicsResponse>,
+                        response: Response<CuratedPicsResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.body()?.photos?.let {
+                                curatedPicAdapter = CuratedAdapter(it as List<CuratedPicsResponse.Photo>)
+                                mainContent.viewPictures.adapter = curatedPicAdapter
+                                mainContent.viewPictures.layoutManager = GridLayoutManager(this@MainActivity, 2)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<CuratedPicsResponse>, t: Throwable) {
+                        Toast.makeText(this@MainActivity, "Ошибка: ${t.message}", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                })
+
+            mainContent.progressBar.visibility = View.GONE
+        }
+    }
+
+
+    private fun initSearchPics(query: String) {
         binding.apply {
             mainContent.progressBar.visibility = View.VISIBLE
 
@@ -80,4 +114,6 @@ class MainActivity : BaseActivity() {
             mainContent.progressBar.visibility = View.GONE
         }
     }
+
+
 }
