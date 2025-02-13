@@ -8,18 +8,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.myapp.pexels_app.adapter.CategoryAdapter
+import ru.myapp.pexels_app.adapter.FeaturedCollectionsAdapter
 import ru.myapp.pexels_app.adapter.CuratedAdapter
 import ru.myapp.pexels_app.adapter.PicListAdapter
 import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.ActivityMainBinding
 import ru.myapp.pexels_app.model.CuratedPicsResponse
+import ru.myapp.pexels_app.model.FeaturedCollectionsResponse
 import ru.myapp.pexels_app.model.PexelsResponse
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var featuredCollectionsAdapter: FeaturedCollectionsAdapter
     private lateinit var curatedPicAdapter: CuratedAdapter
     private lateinit var picAdapter: PicListAdapter
 
@@ -34,24 +35,30 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initCategories() {
-
-        val categories = listOf(
-            "Item 1",
-            "Category 2",
-            "Item 3",
-            " 4",
-            "Item 5",
-            "Item 6",
-            "Item 7"
-        )
-
         binding.apply {
-            categoryAdapter = CategoryAdapter(categories)
+            mainContent.progressBar.visibility = View.VISIBLE
 
+            RetrofitClient.instance.getFeaturedCollections(1, 7)
+                .enqueue(object : Callback<FeaturedCollectionsResponse> {
+                    override fun onResponse(
+                        call: Call<FeaturedCollectionsResponse>,
+                        response: Response<FeaturedCollectionsResponse>
+                    ) {
+                        if(response.isSuccessful) {
+                            response.body()?.collections.let {
+                                featuredCollectionsAdapter = FeaturedCollectionsAdapter(it as List<FeaturedCollectionsResponse.Collection>)
+                                mainContent.viewCategory.adapter = featuredCollectionsAdapter
+                                mainContent.viewCategory.layoutManager =
+                                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                            }
+                        }
+                    }
 
-            mainContent.viewCategory.layoutManager =
-                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
-            mainContent.viewCategory.adapter = categoryAdapter
+                    override fun onFailure(p0: Call<FeaturedCollectionsResponse>, p1: Throwable) {
+                        Toast.makeText(this@MainActivity, "Ошибка: ${p1.message}", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                })
             mainContent.progressBar.visibility = View.GONE
         }
     }
@@ -80,7 +87,6 @@ class MainActivity : BaseActivity() {
                             .show()
                     }
                 })
-
             mainContent.progressBar.visibility = View.GONE
         }
     }
