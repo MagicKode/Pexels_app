@@ -3,7 +3,7 @@ package ru.myapp.pexels_app.model
 
 import com.google.gson.annotations.SerializedName
 
-data class PexelsResponse(
+data class SearchPicsResponse(
     @SerializedName("next_page")
     val nextPage: String?,
     @SerializedName("page")
@@ -29,7 +29,7 @@ data class PexelsResponse(
         @SerializedName("photographer")
         val photographer: String?,
         @SerializedName("photographer_id")
-        val photographerId: Int?,
+        val photographerId: Long?,
         @SerializedName("photographer_url")
         val photographerUrl: String?,
         @SerializedName("src")

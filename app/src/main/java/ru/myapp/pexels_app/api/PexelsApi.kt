@@ -2,11 +2,12 @@ package ru.myapp.pexels_app.api
 
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.Query
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.FeaturedCollectionsResponse
-import ru.myapp.pexels_app.model.PexelsResponse
+import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.utils.Constant.API_KEY
 
 interface PexelsApi {
@@ -25,12 +26,13 @@ interface PexelsApi {
         @Query("per_page") perPage: Int
     ): Call<CuratedPicsResponse>
 
-    @Headers("Authorization: ${API_KEY}")
+//    @Headers("Authorization: ${API_KEY}")
     @GET("v1/search")
-    fun getPicList(
+    fun searchPics(
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
-    ): Call<PexelsResponse>
+        @Query("per_page") perPage: Int,
+        @Header("Authorization") apiKey: String
+    ): Call<SearchPicsResponse>
 
 }
