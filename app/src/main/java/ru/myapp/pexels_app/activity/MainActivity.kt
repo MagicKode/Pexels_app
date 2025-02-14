@@ -1,6 +1,7 @@
 package ru.myapp.pexels_app.activity
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -23,6 +24,7 @@ import ru.myapp.pexels_app.utils.Constant.API_KEY
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,7 @@ class MainActivity : BaseActivity() {
         binding.apply {
             mainContent.searchBarTxt.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                     initSearchPics(s.toString())
@@ -44,6 +47,7 @@ class MainActivity : BaseActivity() {
                     if (s.toString().isNotEmpty()) {
                         mainContent.cleanTxtBtn.visibility = View.VISIBLE
                         initSearchPics(s.toString())
+                        initProgressBar()
                     } else {
                         mainContent.cleanTxtBtn.visibility = View.GONE
                         initCuratedPics()
@@ -56,11 +60,26 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun initProgressBar() {
+        binding.apply {
+            Thread {
+                mainContent.progressBar.visibility = View.VISIBLE
+                for (i in 0..100) {
+                    Thread.sleep(50)
+                    handler.post {
+                        mainContent.progressBar.progress = i
+                    }
+                }
+//                handler.post {
+//                    mainContent.progressBar.visibility = View.GONE
+//                }
+            }.start()
+        }
+    }
+
     private fun initCategories() {
         binding.apply {
-            mainContent.progressBar.visibility = View.VISIBLE
-
-            RetrofitClient.instance.getFeaturedCollections(1, 7)
+            RetrofitClient.instance.getFeaturedCollections(1, 7, API_KEY)
                 .enqueue(object : Callback<FeaturedCollectionsResponse> {
                     override fun onResponse(
                         call: Call<FeaturedCollectionsResponse>,
@@ -89,15 +108,12 @@ class MainActivity : BaseActivity() {
                             .show()
                     }
                 })
-            mainContent.progressBar.visibility = View.GONE
         }
     }
 
     private fun initCuratedPics() {
         binding.apply {
-            mainContent.progressBar.visibility = View.VISIBLE
-
-            RetrofitClient.instance.getCuratedPicList(1, 30)
+            RetrofitClient.instance.getCuratedPicList(1, 30, API_KEY)
                 .enqueue(object : Callback<CuratedPicsResponse> {
                     override fun onResponse(
                         call: Call<CuratedPicsResponse>,
@@ -118,15 +134,11 @@ class MainActivity : BaseActivity() {
                             .show()
                     }
                 })
-            mainContent.progressBar.visibility = View.GONE
         }
     }
 
-
     private fun initSearchPics(query: String) {
         binding.apply {
-            mainContent.progressBar.visibility = View.VISIBLE
-
             RetrofitClient.instance.searchPics(query, 1, 30, API_KEY)
                 .enqueue(object : Callback<SearchPicsResponse> {
                     override fun onResponse(
@@ -150,4 +162,5 @@ class MainActivity : BaseActivity() {
                 })
         }
     }
+
 }

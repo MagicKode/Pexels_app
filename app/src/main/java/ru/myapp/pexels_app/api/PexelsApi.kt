@@ -12,21 +12,21 @@ import ru.myapp.pexels_app.utils.Constant.API_KEY
 
 interface PexelsApi {
 
-    @Headers("Authorization: ${API_KEY}")
     @GET("v1/collections/featured")
     fun getFeaturedCollections(
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Header("Authorization") apiKey: String
     ): Call<FeaturedCollectionsResponse>
 
-    @Headers("Authorization: ${API_KEY}")
+
     @GET("v1/curated")
     fun getCuratedPicList(
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Header("Authorization") apiKey: String
     ): Call<CuratedPicsResponse>
 
-//    @Headers("Authorization: ${API_KEY}")
     @GET("v1/search")
     fun searchPics(
         @Query("query") query: String,
