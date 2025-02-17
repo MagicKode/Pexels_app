@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="14sp"
+        android:textColor="@color/black"
         android:fontFamily="@font/mulish_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

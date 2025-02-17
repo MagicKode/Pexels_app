@@ -13,6 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.myapp.pexels_app.adapter.CuratedAdapter
 import ru.myapp.pexels_app.adapter.FeaturedCollectionsAdapter
+import ru.myapp.pexels_app.adapter.OnItemClickListener
 import ru.myapp.pexels_app.adapter.SearchPicsAdapter
 import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.ActivityMainBinding
@@ -21,7 +22,7 @@ import ru.myapp.pexels_app.model.FeaturedCollectionsResponse
 import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.utils.Constant.API_KEY
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), OnItemClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private val handler = Handler()
@@ -36,7 +37,13 @@ class MainActivity : BaseActivity() {
 
         binding.apply {
             mainContent.searchBarTxt.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
@@ -57,6 +64,13 @@ class MainActivity : BaseActivity() {
             mainContent.cleanTxtBtn.setOnClickListener {
                 mainContent.searchBarTxt.text?.clear()
             }
+        }
+
+    }
+
+    override fun onItemClick(item: FeaturedCollectionsResponse.Collection) {
+        binding.apply {
+            mainContent.searchBarTxt.setText(item.title)
         }
     }
 
@@ -93,8 +107,10 @@ class MainActivity : BaseActivity() {
                                         LinearLayoutManager.HORIZONTAL,
                                         false
                                     )
-                                mainContent.viewCategory.adapter =
-                                    FeaturedCollectionsAdapter(it as List<FeaturedCollectionsResponse.Collection>)
+                                mainContent.viewCategory.adapter = FeaturedCollectionsAdapter(
+                                    it as List<FeaturedCollectionsResponse.Collection>,
+                                    this@MainActivity
+                                )
                             }
                         }
                     }
