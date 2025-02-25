@@ -11,7 +11,7 @@ data class CuratedPicsResponse(
     @SerializedName("per_page")
     val perPage: Int?,
     @SerializedName("photos")
-    val photos: List<Photo?>?
+    val photos: List<Photo>
 ) {
     data class Photo(
         @SerializedName("alt")

@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".category.presentation.CategoryFragment">
+    tools:context=".details.presentation.ImageFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/viewCategory"
+    <ImageView
+        android:id="@+id/detailImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_item_placeholder" />
 
 </FrameLayout>

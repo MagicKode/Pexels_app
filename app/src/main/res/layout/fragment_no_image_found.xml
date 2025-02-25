@@ -11,12 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/mulish_medium"
-        android:text="You haven't saved anything yet"
+        android:text="No image found"
         android:textColor="@color/darkText"
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/exploreBtn"
+        android:id="@+id/exploreImageBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"

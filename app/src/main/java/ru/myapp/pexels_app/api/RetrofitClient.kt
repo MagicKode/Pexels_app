@@ -6,11 +6,10 @@ import ru.myapp.pexels_app.utils.Constant.BASE_URL
 
 object RetrofitClient {
     val instance: PexelsApi by lazy {
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
-        retrofit.create(PexelsApi::class.java)
+            .create(PexelsApi::class.java)
     }
 }

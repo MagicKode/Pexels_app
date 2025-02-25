@@ -53,6 +53,13 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    //navigation
+    implementation (libs.androidx.navigation.fragment.ktx)
+    implementation (libs.androidx.navigation.ui.ktx)
+    implementation (libs.androidx.navigation.dynamic.features.fragment)
+    implementation (libs.kotlinx.serialization.json)
+    implementation (libs.androidx.navigation.testing)
+
     //room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -63,13 +70,15 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.converter.gson)
+
     //coroutine
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-
+    implementation(libs.androidx.cardview)
     //glide
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
 
     testImplementation(libs.junit)
 

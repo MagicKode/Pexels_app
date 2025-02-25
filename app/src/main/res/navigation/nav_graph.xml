@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/parentFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="ru.myapp.pexels_app.home.presentation.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_parentFragment"
+            app:destination="@id/parentFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_curatedPicsFragment"
+            app:destination="@id/curatedPicsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_categoryFragment2"
+            app:destination="@id/categoryFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_noInternetFragment"
+            app:destination="@id/noInternetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="ru.myapp.pexels_app.details.presentation.DetailFragment"
+        android:label="DetailFragment" >
+        <action
+            android:id="@+id/action_detailFragment_to_imageFragment2"
+            app:destination="@id/imageFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_noImageFoundFragment2"
+            app:destination="@id/noImageFoundFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookmarkFragment"
+        android:name="ru.myapp.pexels_app.bookmarks.presentation.BookmarkFragment"
+        android:label="fragment_bookmark"
+        tools:layout="@layout/fragment_bookmark" >
+        <action
+            android:id="@+id/action_bookmarkFragment_to_parentFragment"
+            app:destination="@id/parentFragment" />
+        <action
+            android:id="@+id/action_bookmarkFragment_to_bookmarkPicsFragment2"
+            app:destination="@id/bookmarkPicsFragment" />
+        <action
+            android:id="@+id/action_bookmarkFragment_to_emptyBookmarkFragment2"
+            app:destination="@id/emptyBookmarkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryFragment2"
+        android:name="ru.myapp.pexels_app.category.presentation.CategoryFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category" >
+        <action
+            android:id="@+id/action_categoryFragment2_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/curatedPicsFragment"
+        android:name="ru.myapp.pexels_app.home.presentation.CuratedPicsFragment"
+        android:label="fragment_curated"
+        tools:layout="@layout/fragment_curated" >
+        <action
+            android:id="@+id/action_curatedPicsFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookmarkPicsFragment"
+        android:name="ru.myapp.pexels_app.bookmarks.presentation.BookmarkPicsFragment"
+        android:label="BookmarkPicsFragment" >
+        <action
+            android:id="@+id/action_bookmarkPicsFragment_to_bookmarkFragment2"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="ru.myapp.pexels_app.details.presentation.ImageFragment"
+        android:label="fragment_image"
+        tools:layout="@layout/fragment_image" >
+        <action
+            android:id="@+id/action_imageFragment_to_detailFragment2"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emptyBookmarkFragment"
+        android:name="ru.myapp.pexels_app.bookmarks.presentation.EmptyBookmarkFragment"
+        android:label="EmptyBookmarkFragment" >
+        <action
+            android:id="@+id/action_emptyBookmarkFragment_to_bookmarkFragment2"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/noImageFoundFragment"
+        android:name="ru.myapp.pexels_app.details.presentation.NoImageFoundFragment"
+        android:label="NoImageFoundFragment" >
+        <action
+            android:id="@+id/action_noImageFoundFragment_to_detailFragment2"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/parentFragment"
+        android:name="ru.myapp.pexels_app.parent.presentation.ParentFragment"
+        android:label="ParentFragment" >
+        <action
+            android:id="@+id/action_parentFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_parentFragment_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/noInternetFragment"
+        android:name="ru.myapp.pexels_app.home.presentation.NoInternetFragment"
+        android:label="NoInternetFragment" >
+        <action
+            android:id="@+id/action_noInternetFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+</navigation>
