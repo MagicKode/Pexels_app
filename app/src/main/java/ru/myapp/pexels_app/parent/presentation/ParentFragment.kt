@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import ru.myapp.pexels_app.R
-import ru.myapp.pexels_app.bookmarks.presentation.BookmarkFragment
+import ru.myapp.pexels_app.adapter.PagerAdapter
 import ru.myapp.pexels_app.databinding.FragmentParentBinding
-import ru.myapp.pexels_app.home.presentation.HomeFragment
-import ru.myapp.pexels_app.home.presentation.NoInternetFragment
 
 class ParentFragment : Fragment() {
 
@@ -26,21 +25,34 @@ class ParentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initHomeFragment()
-//                initBookmarkFragment()
+        initFragmentSelector()
     }
 
-    private fun initHomeFragment() {
-        val homeFragment = HomeFragment()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.parentContainer, homeFragment)
-            .commit()
-    }
+    private fun initFragmentSelector() {
+        binding.apply {
+            viewPager.adapter = PagerAdapter(this@ParentFragment)
 
-    private fun initBookmarkFragment() {
-        val bookmarkFragment = BookmarkFragment()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.parentContainer, bookmarkFragment)
-            .commit()
+            navigation.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.action_home -> {
+                        viewPager.currentItem = 0
+                        true
+                    }
+
+                    R.id.action_bookmark -> {
+                        viewPager.currentItem = 1
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    navigation.menu.getItem(position).isChecked = true
+                }
+            })
+        }
     }
 }
