@@ -5,11 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.myapp.pexels_app.R
+import ru.myapp.pexels_app.adapter.SearchPicsAdapter
+import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.bookmarks.presentation.BookmarkFragment
 import ru.myapp.pexels_app.category.presentation.CategoryFragment
 import ru.myapp.pexels_app.databinding.FragmentHomeBinding
 import ru.myapp.pexels_app.details.presentation.DetailFragment
+import ru.myapp.pexels_app.utils.Constant.API_KEY
 
 class HomeFragment : Fragment() {
 
@@ -27,12 +35,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        initCategoryClickListener()
+
         initCategories()
         initCuratedPics()
 
 //        initNoInternetConnection()
-//        initDetailFragment()
 
     }
 
@@ -50,19 +57,13 @@ class HomeFragment : Fragment() {
             .commit()
     }
 
-    private fun initDetailFragment() {
-        val detailFragment = DetailFragment()
-        childFragmentManager.beginTransaction()
-            .add(R.id.detailContainer, detailFragment)
-            .commit()
-    }
 
-    private fun initNoInternetConnection() {
-        val noInternetFragment = NoInternetFragment()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.noInternetContainer, noInternetFragment)
-            .commit()
-    }
+//    private fun initNoInternetConnection() {
+//        val noInternetFragment = NoInternetFragment()
+//        childFragmentManager.beginTransaction()
+//            .replace(R.id.noInternetContainer, noInternetFragment)
+//            .commit()
+//    }
 
 
 

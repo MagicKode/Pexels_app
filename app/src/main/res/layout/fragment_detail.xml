@@ -2,20 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/nameSurnameTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_bold"
-        android:text="Name Surname"
-        android:textColor="@color/darkText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -36,6 +24,20 @@
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/nameSurnameTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:fontFamily="@font/mulish_bold"
+        android:text="Name Surname"
+        android:textColor="@color/darkText"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
     <ProgressBar
         android:id="@+id/progressBarDetail"
         style="?android:attr/progressBarStyleHorizontal"
@@ -51,15 +53,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
-    <FrameLayout
-        android:id="@+id/imageContainer"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="628dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:background="@drawable/bg_item_placeholder"
+        android:layout_marginBottom="46dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <ImageView
+            android:id="@+id/detailImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -71,7 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <com.google.android.material.bottomappbar.BottomAppBar
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -125,9 +134,6 @@
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/bookmark_ic_light" />
             </LinearLayout>
-
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
-
+        </com.google.android.material.bottomappbar.BottomAppBar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

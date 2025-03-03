@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.room)
-
 }
 
 android {
@@ -52,13 +51,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.kotlin.stdlib)
 
     //navigation
-    implementation (libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
-    implementation (libs.androidx.navigation.dynamic.features.fragment)
-    implementation (libs.kotlinx.serialization.json)
-    implementation (libs.androidx.navigation.testing)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.navigation.testing)
 
     //room
     implementation(libs.androidx.room.runtime)
@@ -78,7 +78,6 @@ dependencies {
     //glide
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
-
 
     testImplementation(libs.junit)
 

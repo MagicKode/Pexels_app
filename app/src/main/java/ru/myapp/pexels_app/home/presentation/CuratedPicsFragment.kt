@@ -1,6 +1,7 @@
 package ru.myapp.pexels_app.home.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,44 +11,63 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.adapter.CuratedAdapter
-import ru.myapp.pexels_app.adapter.listener.OnImageClickListener
 import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.FragmentCuratedBinding
-import ru.myapp.pexels_app.model.DetailPicResponse
+import ru.myapp.pexels_app.details.presentation.DetailFragment
+import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.utils.Constant.API_KEY
 
-class CuratedPicsFragment : Fragment(), OnImageClickListener {
+class CuratedPicsFragment : Fragment() {
 
     private lateinit var binding: FragmentCuratedBinding
+    private lateinit var adapter: CuratedAdapter
+    private val picsList = mutableListOf<CuratedPicsResponse.Photo>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCuratedBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initCuratedPics()
 
+        adapter = CuratedAdapter(picsList) { photo ->
+            initDetailFragment(photo)
+        }
     }
 
     private fun initCuratedPics() {
         binding.apply {
             CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitClient.instance.getCuratedPicList(1, 30, API_KEY)
-                withContext(Dispatchers.Main) {
-                    viewPictures.layoutManager = GridLayoutManager(context, 2)
-                    viewPictures.adapter = CuratedAdapter(response.photos, this@CuratedPicsFragment)
+                try {
+                    val response = RetrofitClient.instance.getCuratedPicList(1, 30, API_KEY)
+                    withContext(Dispatchers.Main) {
+                        viewPictures.layoutManager = GridLayoutManager(context, 2)
+                        viewPictures.adapter = adapter
+
+                        picsList.clear()
+                        picsList.addAll(response.photos)
+                        adapter.notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                    Log.e("CuratedPicsFragment", "Exception: ${e.message}")
                 }
             }
         }
     }
 
-    override fun onImageClick(pic: DetailPicResponse) {
-        //TODO show DetailFragment
+    private fun initDetailFragment(photo: CuratedPicsResponse.Photo) {
+        val detailFragment = DetailFragment.newInstance(photo)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.detailContainer, detailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
