@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
@@ -19,7 +20,11 @@ class CuratedAdapter(
 
         fun bind(photo: CuratedPicsResponse.Photo) {
             Glide.with(itemView.context)
+                .asBitmap()
                 .load(photo.src.original)
+                .transition(BitmapTransitionOptions.withCrossFade(80))
+                .error(R.drawable.placeholder_light)
+                .placeholder(R.drawable.placeholder_light)
                 .into(imageView)
 
             itemView.setOnClickListener {

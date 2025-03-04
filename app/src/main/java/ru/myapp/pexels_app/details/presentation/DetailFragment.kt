@@ -1,36 +1,26 @@
 package ru.myapp.pexels_app.details.presentation
 
-import android.content.ContentValues
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.util.Executors
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
 import ru.myapp.pexels_app.model.CuratedPicsResponse
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -54,15 +44,42 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
         photo?.let {
             Glide.with(this)
+                .asBitmap()
                 .load(photo.src.original)
+                .centerCrop()
+                .transition(BitmapTransitionOptions.withCrossFade(80))
+                .error(R.drawable.placeholder_light)
+                .placeholder(R.drawable.placeholder_light)
                 .into(imageView)
             photographerNameSurname.text = it.photographer
         }
 
         initBackStack()
-        initSaveImageToStore()
 
+        binding.apply {
+            downloadBtn.setOnClickListener {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    initDownloadImage()
+                    Toast.makeText(context, "Downloaded successful", Toast.LENGTH_LONG).show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        STORAGE_PERMISSION_CODE
+                    )
+                }
+            }
+        }
 
+        binding.apply {
+            bookmarkBtn.setOnClickListener{
+                //
+            }
+        }
     }
 
     private fun initBackStack() {
@@ -73,81 +90,30 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
     }
 
-
-    // Declaring and initializing an Executor and a Handler
-    private fun initSaveImageToStore() {
+    private fun initDownloadImage() {
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
-        val myExecutor = Executors.directExecutor()
-        val myHandler = Handler(Looper.getMainLooper())
-        var mImage: Bitmap?
 
         binding.apply {
-            downloadBtn.setOnClickListener {
-                myExecutor.execute {
-                    mImage = mLoad(photo?.url.toString())
-                    myHandler.post {
-                        detailImage.setImageBitmap(mImage)
-                        if (mImage != null) {
-                            initSaveMediaToStorage(mImage)
-                        }
-                    }
-                }
-            }
+            val url = photo?.url
+            val downloadManager =
+                requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val uri = Uri.parse(url)
+            val request = DownloadManager.Request(uri)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "image.jpg")
+            downloadManager.enqueue(request)
         }
     }
 
-    // Function to establish connection and load image
-    private fun mLoad(string: String): Bitmap? {
-        val url: URL = mStringToURL(string)!!
-        val connection: HttpURLConnection?
-        try {
-            connection = url.openConnection() as HttpURLConnection
-            connection.content
-            val inputStream: InputStream = connection.inputStream
-            val bufferedReaderInputStream = BufferedInputStream(inputStream)
-            return BitmapFactory.decodeStream(bufferedReaderInputStream)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
-        }
-        return null
-    }
-
-    // Function to convert string to URL
-    private fun mStringToURL(string: String): URL? {
-        try {
-            return URL(string)
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    //
-    private fun initSaveMediaToStorage(bitmap: Bitmap?) {
-        val filename = "${System.currentTimeMillis()}.jpg"
-        var fos: OutputStream? = null
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context?.contentResolver.also { resolver ->
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                }
-                val imageUri: Uri? =
-                    resolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                fos = imageUri?.let { resolver.openOutputStream(it) }
-            }
-        } else {
-            val imagesDir =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val image = File(imagesDir, filename)
-            fos = FileOutputStream(image)
-        }
-        fos?.use {
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
-            Toast.makeText(context, "Saved to Gallery", Toast.LENGTH_SHORT).show()
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == STORAGE_PERMISSION_CODE && grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            initDownloadImage()
         }
     }
 
@@ -162,6 +128,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
         private const val ARG_IMAGE = "photo"
+        private val STORAGE_PERMISSION_CODE = 100
 
         fun newInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
             val fragment = DetailFragment()
