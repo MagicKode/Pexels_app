@@ -121,7 +121,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bookmarkBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center|end"
@@ -129,7 +128,7 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/bookmarkBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

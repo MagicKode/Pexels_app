@@ -63,6 +63,8 @@ dependencies {
     //room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    annotationProcessor(libs.androidx.room.compiler)
+    annotationProcessor(libs.lifecycle.compiler)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 

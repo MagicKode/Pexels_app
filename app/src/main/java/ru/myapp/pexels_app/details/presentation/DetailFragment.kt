@@ -16,31 +16,38 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
+import ru.myapp.pexels_app.db.PexelsDatabase
 import ru.myapp.pexels_app.model.CuratedPicsResponse
+import ru.myapp.pexels_app.model.DetailPicResponse
+import ru.myapp.pexels_app.utils.Constant.APP
+import ru.myapp.pexels_app.viewmodel.DetailViewModel
+import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
 
-class DetailFragment : Fragment(R.layout.fragment_detail) {
-
+class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
+    private lateinit var detailViewModel: DetailViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val db = context?.let { PexelsDatabase.getDatabase(it) }
+        detailViewModel = ViewModelProvider(this, DetailViewModelFactory(requireActivity().application)).get(DetailViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val imageView: ImageView = view.findViewById(R.id.detailImage)
         val photographerNameSurname: TextView = view.findViewById(R.id.nameSurnameTxt)
-
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
         photo?.let {
             Glide.with(this)
@@ -56,6 +63,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         initBackStack()
 
+        //download image to local phone gallery
         binding.apply {
             downloadBtn.setOnClickListener {
                 if (ContextCompat.checkSelfPermission(
@@ -75,20 +83,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
 
-        binding.apply {
-            bookmarkBtn.setOnClickListener{
-                //
-            }
+        if (photo != null) {
+            saveImageInDb(photo)
         }
     }
 
     private fun initBackStack() {
         binding.apply {
             backBtn.setOnClickListener {
-                activity?.supportFragmentManager?.popBackStack()
+                APP.findNavController(R.id.action_detailFragment_to_curatedPicsFragment)
             }
         }
-    }
+    }  //TODO about initilization
+
 
     private fun initDownloadImage() {
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
@@ -104,11 +111,17 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    private fun saveImageInDb(photo: CuratedPicsResponse.Photo) {
+        binding.bookmarkBtn.setOnClickListener {
+
+
+            detailViewModel.insertPic(photo)
+            Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //permission for save image in gallery
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == STORAGE_PERMISSION_CODE && grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -117,20 +130,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
     }
 
-
-    private fun initBookmarkImage() {
-        binding.apply {
-            downloadBtn.setOnClickListener {
-                // TODO download image functional
-            }
-        }
-    }
-
     companion object {
         private const val ARG_IMAGE = "photo"
         private val STORAGE_PERMISSION_CODE = 100
 
         fun newInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
+            val fragment = DetailFragment()
+            val args = Bundle()
+            args.putParcelable(ARG_IMAGE, photo)
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun newBookmarkInstance(photo: DetailPicResponse): DetailFragment {
             val fragment = DetailFragment()
             val args = Bundle()
             args.putParcelable(ARG_IMAGE, photo)

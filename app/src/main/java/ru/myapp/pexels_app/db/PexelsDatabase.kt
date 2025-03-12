@@ -5,31 +5,30 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.myapp.pexels_app.db.dao.PicDao
+import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.DetailPicResponse
 
 @Database(
     entities = [
-        DetailPicResponse::class
-    ],
-    version = 1, //todo version up after changing database structure
-    exportSchema = false
+        DetailPicResponse::class,
+        CuratedPicsResponse.Photo::class
+    ], version = 1
 )
-
-abstract class AppDatabaseHelper : RoomDatabase() {
-    abstract fun picDao(): PicDao
+abstract class PexelsDatabase : RoomDatabase() {
+    abstract fun getPicDao(): PicDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabaseHelper? = null
+        private var database: PexelsDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabaseHelper {
-            return INSTANCE ?: synchronized(this) {
+        fun getDatabase(context: Context): PexelsDatabase {
+            return database ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    AppDatabaseHelper::class.java,
+                    PexelsDatabase::class.java,
                     "pexels_database"
                 ).build()
-                INSTANCE = instance
+                database = instance
                 instance
             }
         }

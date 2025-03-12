@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ru.myapp.pexels_app.R
+import ru.myapp.pexels_app.adapter.BookmarkAdapter
 import ru.myapp.pexels_app.databinding.FragmentBookmarkBinding
 import ru.myapp.pexels_app.databinding.FragmentBookmarkPicsBinding
 

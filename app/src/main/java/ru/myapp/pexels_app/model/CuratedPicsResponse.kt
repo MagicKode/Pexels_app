@@ -2,73 +2,45 @@ package ru.myapp.pexels_app.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "curated_pics")
 data class CuratedPicsResponse(
-    @SerializedName("next_page")
-    val nextPage: String?,
-    @SerializedName("page")
-    val page: Int?,
-    @SerializedName("per_page")
-    val perPage: Int?,
+    @ColumnInfo(name = "photos")
     @SerializedName("photos")
     val photos: List<Photo>
 ) {
     data class Photo(
-        @SerializedName("alt")
-        val alt: String?,
-        @SerializedName("avg_color")
-        val avgColor: String?,
-        @SerializedName("height")
-        val height: Int?,
+        @PrimaryKey(autoGenerate = true)
         @SerializedName("id")
         val id: Int?,
-        @SerializedName("liked")
-        val liked: Boolean?,
+
+        @ColumnInfo(name = "photographer")
         @SerializedName("photographer")
         val photographer: String?,
-        @SerializedName("photographer_id")
-        val photographerId: Long?,
-        @SerializedName("photographer_url")
-        val photographerUrl: String?,
+
+        @ColumnInfo(name = "src")
         @SerializedName("src")
         val src: Src,
+
+        @ColumnInfo(name = "url")
         @SerializedName("url")
         val url: String?,
-        @SerializedName("width")
-        val width: Int?
     ) : Parcelable {
         data class Src(
-            @SerializedName("landscape")
-            val landscape: String?,
-            @SerializedName("large")
-            val large: String?,
-            @SerializedName("large2x")
-            val large2x: String?,
-            @SerializedName("medium")
-            val medium: String?,
+            @ColumnInfo(name = "original")
             @SerializedName("original")
             val original: String,
-            @SerializedName("portrait")
-            val portrait: String?,
-            @SerializedName("small")
-            val small: String?,
-            @SerializedName("tiny")
-            val tiny: String?
         )
 
         constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readString(),
-            parcel.readValue(Long::class.java.classLoader) as? Long,
             parcel.readString(),
             TODO("src"),
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int
+            parcel.readString()
         )
 
         override fun describeContents(): Int {

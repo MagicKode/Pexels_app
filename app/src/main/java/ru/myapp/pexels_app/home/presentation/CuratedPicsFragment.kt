@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,9 +27,7 @@ class CuratedPicsFragment : Fragment() {
     private val picsList = mutableListOf<CuratedPicsResponse.Photo>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCuratedBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -49,7 +48,8 @@ class CuratedPicsFragment : Fragment() {
                 try {
                     val response = RetrofitClient.instance.getCuratedPicList(1, 30, API_KEY)
                     withContext(Dispatchers.Main) {
-                        viewPictures.layoutManager = GridLayoutManager(context, 2)
+                        viewPictures.layoutManager =
+                            StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
                         viewPictures.adapter = adapter
 
                         picsList.clear()
