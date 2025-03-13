@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
-import ru.myapp.pexels_app.db.PexelsDatabase
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.DetailPicResponse
 import ru.myapp.pexels_app.utils.Constant.APP
@@ -35,7 +34,6 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val db = context?.let { PexelsDatabase.getDatabase(it) }
         detailViewModel = ViewModelProvider(this, DetailViewModelFactory(requireActivity().application)).get(DetailViewModel::class.java)
     }
 

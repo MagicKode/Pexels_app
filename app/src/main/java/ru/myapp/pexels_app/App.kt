@@ -14,7 +14,7 @@ class App: Application() {
         db = Room.databaseBuilder(
             applicationContext,
             PexelsDatabase::class.java,
-            "db"
+            "pexels_database"
         ).build()
     }
 }

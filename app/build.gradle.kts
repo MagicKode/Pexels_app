@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.room)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -64,9 +65,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
-    annotationProcessor(libs.lifecycle.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
 
     //retrofit
     implementation(libs.retrofit)

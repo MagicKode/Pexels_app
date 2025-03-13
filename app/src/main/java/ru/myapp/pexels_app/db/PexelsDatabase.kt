@@ -4,9 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.myapp.pexels_app.db.dao.PicDao
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.DetailPicResponse
+import ru.myapp.pexels_app.model.converter.Converter
 
 @Database(
     entities = [
@@ -14,6 +19,7 @@ import ru.myapp.pexels_app.model.DetailPicResponse
         CuratedPicsResponse.Photo::class
     ], version = 1
 )
+@TypeConverters(Converter::class)
 abstract class PexelsDatabase : RoomDatabase() {
     abstract fun getPicDao(): PicDao
 
@@ -27,10 +33,22 @@ abstract class PexelsDatabase : RoomDatabase() {
                     context.applicationContext,
                     PexelsDatabase::class.java,
                     "pexels_database"
-                ).build()
+                )
+//                    .addMigrations(MIGRATION_1_2)
+                    .fallbackToDestructiveMigration()
+                    .build()
                 database = instance
                 instance
             }
         }
     }
 }
+
+//private val MIGRATION_1_2 = object : Migration(1, 2) {
+//    override fun migrate(db: SupportSQLiteDatabase) {
+//        db.execSQL(
+//
+//        )
+//    }
+//
+//}

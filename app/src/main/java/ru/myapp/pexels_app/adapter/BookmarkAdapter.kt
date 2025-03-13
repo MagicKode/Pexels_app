@@ -24,7 +24,7 @@ class BookmarkAdapter(/*private val itemClick: (DetailPicResponse) -> Unit*/) :
         fun bind(photo: CuratedPicsResponse.Photo) {
             Glide.with(itemView.context)
                 .asBitmap()
-                .load(photo.src?.original)
+                .load(photo.src.original)
                 .transition(BitmapTransitionOptions.withCrossFade(80))
                 .error(R.drawable.placeholder_light)
                 .placeholder(R.drawable.placeholder_light)

@@ -13,6 +13,7 @@ data class CuratedPicsResponse(
     @SerializedName("photos")
     val photos: List<Photo>
 ) {
+    @Entity(tableName = "curated_photo")
     data class Photo(
         @PrimaryKey(autoGenerate = true)
         @SerializedName("id")
@@ -44,10 +45,10 @@ data class CuratedPicsResponse(
         )
 
         override fun describeContents(): Int {
-            TODO("Not yet implemented")
+            return 0
         }
 
-        override fun writeToParcel(p0: Parcel, p1: Int) {
+        override fun writeToParcel(dest: Parcel, flags: Int) {
             TODO("Not yet implemented")
         }
 

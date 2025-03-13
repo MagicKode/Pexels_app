@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.db.PexelsDatabase
 import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
@@ -22,7 +23,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         allPics = MutableLiveData()
     }
 
-    fun getAllPics(): LiveData<List<CuratedPicsResponse.Photo>> {
+    fun getAllPics(): Flow<List<CuratedPicsResponse.Photo>> {
         return picsRepository.getAllPics()
     }
 
