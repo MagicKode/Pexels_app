@@ -16,15 +16,14 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
 import ru.myapp.pexels_app.model.CuratedPicsResponse
-import ru.myapp.pexels_app.model.DetailPicResponse
-import ru.myapp.pexels_app.utils.Constant.APP
 import ru.myapp.pexels_app.viewmodel.DetailViewModel
 import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
 
@@ -34,10 +33,17 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        detailViewModel = ViewModelProvider(this, DetailViewModelFactory(requireActivity().application)).get(DetailViewModel::class.java)
+        detailViewModel =
+            ViewModelProvider(this, DetailViewModelFactory(requireActivity().application)).get(
+                DetailViewModel::class.java
+            )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -89,10 +95,10 @@ class DetailFragment : Fragment() {
     private fun initBackStack() {
         binding.apply {
             backBtn.setOnClickListener {
-                APP.findNavController(R.id.action_detailFragment_to_curatedPicsFragment)
+                findNavController().navigate(R.id.homeFragment)
             }
         }
-    }  //TODO about initilization
+    }
 
 
     private fun initDownloadImage() {
@@ -111,15 +117,17 @@ class DetailFragment : Fragment() {
 
     private fun saveImageInDb(photo: CuratedPicsResponse.Photo) {
         binding.bookmarkBtn.setOnClickListener {
-
-
             detailViewModel.insertPic(photo)
             Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show()
         }
     }
 
     //permission for save image in gallery
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == STORAGE_PERMISSION_CODE && grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -140,7 +148,7 @@ class DetailFragment : Fragment() {
             return fragment
         }
 
-        fun newBookmarkInstance(photo: DetailPicResponse): DetailFragment {
+        fun newBookmarkInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
             val fragment = DetailFragment()
             val args = Bundle()
             args.putParcelable(ARG_IMAGE, photo)

@@ -1,6 +1,5 @@
 package ru.myapp.pexels_app.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,12 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
-class BookmarkAdapter(/*private val itemClick: (DetailPicResponse) -> Unit*/) :
-    RecyclerView.Adapter<BookmarkAdapter.PicsViewHolder>() {
+class BookmarkAdapter(
+    private val picList: List<CuratedPicsResponse.Photo>,
+    private val itemClick: (CuratedPicsResponse.Photo) -> Unit) :
+    RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder>() {
 
-    var picList = emptyList<CuratedPicsResponse.Photo>()
-
-    inner class PicsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class BookmarkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.picFromDb)
         val photographerNameSurname: TextView = itemView.findViewById(R.id.photographerTxt)
 
@@ -30,25 +29,23 @@ class BookmarkAdapter(/*private val itemClick: (DetailPicResponse) -> Unit*/) :
                 .placeholder(R.drawable.placeholder_light)
                 .into(imageView)
             photographerNameSurname.text = photo.photographer
+
+            itemView.setOnClickListener{
+                itemClick(photo)
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PicsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.viewholder_bookmark, parent, false)
-        return PicsViewHolder(view)
+        return BookmarkViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: BookmarkAdapter.PicsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BookmarkAdapter.BookmarkViewHolder, position: Int) {
         holder.bind(picList[position])
         holder.photographerNameSurname.text = picList[position].photographer
     }
 
     override fun getItemCount() = picList.size
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setImages(imageList: List<CuratedPicsResponse.Photo>) {
-        picList = imageList
-        notifyDataSetChanged()
-    }
 }

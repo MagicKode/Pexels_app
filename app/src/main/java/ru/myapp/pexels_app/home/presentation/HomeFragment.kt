@@ -5,19 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.myapp.pexels_app.R
-import ru.myapp.pexels_app.adapter.SearchPicsAdapter
-import ru.myapp.pexels_app.api.RetrofitClient
-import ru.myapp.pexels_app.bookmarks.presentation.BookmarkFragment
 import ru.myapp.pexels_app.category.presentation.CategoryFragment
 import ru.myapp.pexels_app.databinding.FragmentHomeBinding
-import ru.myapp.pexels_app.details.presentation.DetailFragment
-import ru.myapp.pexels_app.utils.Constant.API_KEY
 
 class HomeFragment : Fragment() {
 
@@ -28,18 +18,15 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         initCategories()
         initCuratedPics()
-
-//        initNoInternetConnection()
 
     }
 

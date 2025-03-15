@@ -67,7 +67,6 @@ class CuratedPicsFragment : Fragment() {
         val detailFragment = DetailFragment.newInstance(photo)
         parentFragmentManager.beginTransaction()
             .replace(R.id.detailContainer, detailFragment)
-            .addToBackStack(null)
             .commit()
     }
 }

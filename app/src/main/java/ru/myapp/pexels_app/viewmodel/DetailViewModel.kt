@@ -14,7 +14,7 @@ import ru.myapp.pexels_app.model.CuratedPicsResponse
 
 class DetailViewModel(application: Application) : AndroidViewModel(application) {
     private var picsRepository: PicsRepositoryImpl
-    private var allPics: LiveData<List<CuratedPicsResponse.Photo>>
+    private var allPics: LiveData<MutableList<CuratedPicsResponse.Photo>>
 
 
     init {
@@ -23,7 +23,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         allPics = MutableLiveData()
     }
 
-    fun getAllPics(): Flow<List<CuratedPicsResponse.Photo>> {
+    fun getAllPics(): List<CuratedPicsResponse.Photo> {
         return picsRepository.getAllPics()
     }
 

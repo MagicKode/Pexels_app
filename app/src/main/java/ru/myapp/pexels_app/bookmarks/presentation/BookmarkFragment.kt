@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ru.myapp.pexels_app.R
-import ru.myapp.pexels_app.adapter.BookmarkAdapter
 import ru.myapp.pexels_app.databinding.FragmentBookmarkBinding
-import ru.myapp.pexels_app.databinding.FragmentBookmarkPicsBinding
 
 class BookmarkFragment : Fragment() {
 
@@ -26,9 +24,13 @@ class BookmarkFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bookmarkPicsFragment = BookmarkPicsFragment()
+        initBookmarkPics()
+    }
 
+    private fun initBookmarkPics() {
+        val bookmarkPicsFragment = BookmarkPicsFragment()
         childFragmentManager.beginTransaction()
             .replace(R.id.bookmarkPicsContainer, bookmarkPicsFragment)
+            .commit()
     }
 }
