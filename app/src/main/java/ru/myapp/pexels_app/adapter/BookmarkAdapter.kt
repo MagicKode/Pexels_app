@@ -13,27 +13,17 @@ import ru.myapp.pexels_app.model.CuratedPicsResponse
 
 class BookmarkAdapter(
     private val picList: List<CuratedPicsResponse.Photo>,
-    private val itemClick: (CuratedPicsResponse.Photo) -> Unit) :
+    private val itemClick: OnImageClickListener
+) :
     RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder>() {
+
+    interface OnImageClickListener {
+        fun onImageClick(pic: CuratedPicsResponse.Photo)
+    }
 
     inner class BookmarkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.picFromDb)
         val photographerNameSurname: TextView = itemView.findViewById(R.id.photographerTxt)
-
-        fun bind(photo: CuratedPicsResponse.Photo) {
-            Glide.with(itemView.context)
-                .asBitmap()
-                .load(photo.src.original)
-                .transition(BitmapTransitionOptions.withCrossFade(80))
-                .error(R.drawable.placeholder_light)
-                .placeholder(R.drawable.placeholder_light)
-                .into(imageView)
-            photographerNameSurname.text = photo.photographer
-
-            itemView.setOnClickListener{
-                itemClick(photo)
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
@@ -43,8 +33,19 @@ class BookmarkAdapter(
     }
 
     override fun onBindViewHolder(holder: BookmarkAdapter.BookmarkViewHolder, position: Int) {
-        holder.bind(picList[position])
-        holder.photographerNameSurname.text = picList[position].photographer
+        val photo = picList[position]
+        Glide.with(holder.itemView.context)
+            .asBitmap()
+            .load(photo.src.original)
+            .transition(BitmapTransitionOptions.withCrossFade(80))
+            .error(R.drawable.placeholder_light)
+            .placeholder(R.drawable.placeholder_light)
+            .into(holder.imageView)
+        holder.photographerNameSurname.text = photo.photographer
+
+        holder.imageView.setOnClickListener {
+            itemClick.onImageClick(photo)
+        }
     }
 
     override fun getItemCount() = picList.size

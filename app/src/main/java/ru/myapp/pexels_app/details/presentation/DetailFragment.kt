@@ -23,7 +23,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
+import ru.myapp.pexels_app.db.PexelsDatabase
+import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
+import ru.myapp.pexels_app.utils.Constant.ARG_IMAGE
 import ru.myapp.pexels_app.viewmodel.DetailViewModel
 import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
 
@@ -33,17 +36,14 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        detailViewModel =
-            ViewModelProvider(this, DetailViewModelFactory(requireActivity().application)).get(
-                DetailViewModel::class.java
-            )
+        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
+        val picsRepository = PicsRepositoryImpl(picDao)
+        val factory = DetailViewModelFactory(picsRepository)
+        detailViewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -100,7 +100,6 @@ class DetailFragment : Fragment() {
         }
     }
 
-
     private fun initDownloadImage() {
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
 
@@ -137,18 +136,9 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        private const val ARG_IMAGE = "photo"
         private val STORAGE_PERMISSION_CODE = 100
 
         fun newInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
-            val fragment = DetailFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_IMAGE, photo)
-            fragment.arguments = args
-            return fragment
-        }
-
-        fun newBookmarkInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
             val fragment = DetailFragment()
             val args = Bundle()
             args.putParcelable(ARG_IMAGE, photo)

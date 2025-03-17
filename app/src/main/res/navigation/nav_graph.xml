@@ -56,9 +56,6 @@
         android:name="ru.myapp.pexels_app.details.presentation.DetailFragment"
         android:label="DetailFragment" >
         <action
-            android:id="@+id/action_detailFragment_to_bookmarkFragment"
-            app:destination="@id/bookmarkFragment" />
-        <action
             android:id="@+id/action_detailFragment_to_homeFragment2"
             app:destination="@id/homeFragment" />
     </fragment>
@@ -72,9 +69,20 @@
         <action
             android:id="@+id/action_bookmarkPicsFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_bookmarkPicsFragment_to_bookmarkDetailFragment"
+            app:destination="@id/bookmarkDetailFragment" />
     </fragment>
     <activity
         android:id="@+id/baseActivity"
         android:name="ru.myapp.pexels_app.main.BaseActivity"
         android:label="BaseActivity" />
+    <fragment
+        android:id="@+id/bookmarkDetailFragment"
+        android:name="ru.myapp.pexels_app.bookmarks.presentation.BookmarkDetailFragment"
+        android:label="BookmarkDetailFragment" >
+        <action
+            android:id="@+id/action_bookmarkDetailFragment_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
 </navigation>

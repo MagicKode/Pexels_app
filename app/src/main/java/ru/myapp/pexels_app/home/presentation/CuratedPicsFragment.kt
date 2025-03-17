@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.CoroutineScope
@@ -65,8 +66,6 @@ class CuratedPicsFragment : Fragment() {
 
     private fun initDetailFragment(photo: CuratedPicsResponse.Photo) {
         val detailFragment = DetailFragment.newInstance(photo)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.detailContainer, detailFragment)
-            .commit()
+        findNavController().navigate(R.id.detailFragment, detailFragment.arguments)
     }
 }

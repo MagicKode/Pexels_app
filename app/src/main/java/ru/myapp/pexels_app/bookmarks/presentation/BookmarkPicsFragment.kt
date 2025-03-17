@@ -6,32 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.adapter.BookmarkAdapter
 import ru.myapp.pexels_app.databinding.FragmentBookmarkPicsBinding
-import ru.myapp.pexels_app.details.presentation.DetailFragment
+import ru.myapp.pexels_app.db.PexelsDatabase
+import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
-import ru.myapp.pexels_app.model.DetailPicResponse
 import ru.myapp.pexels_app.viewmodel.DetailViewModel
+import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
 
-class BookmarkPicsFragment : Fragment() {
+class BookmarkPicsFragment : Fragment(), BookmarkAdapter.OnImageClickListener {
 
     private lateinit var binding: FragmentBookmarkPicsBinding
     private lateinit var adapter: BookmarkAdapter
     private lateinit var viewModel: DetailViewModel
-    private val picsList = mutableListOf<CuratedPicsResponse.Photo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
+        val picsRepository = PicsRepositoryImpl(picDao)
+        val factory = DetailViewModelFactory(picsRepository)
+        viewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -43,31 +45,17 @@ class BookmarkPicsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val recyclerView: RecyclerView = view.findViewById(R.id.bookmarkPics)
+        adapter = BookmarkAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
 
-        initBookmarkPics()
-
-        adapter = BookmarkAdapter(picsList) { photo ->
-            initDetailFragment(photo)
-        }
-    }
-
-    private fun initBookmarkPics() {
-        binding.apply {
-            CoroutineScope(Dispatchers.IO).launch {
-                val images = viewModel.getAllPics()
-
-                withContext(Dispatchers.Main) {
-                    bookmarkPics.layoutManager =
-                        StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-                }
-                adapter = BookmarkAdapter(images) {}
-                bookmarkPics.adapter = adapter
-
-                picsList.clear()
-                picsList.addAll(images)
-                adapter.notifyDataSetChanged()
-            }
-        }
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        viewModel.getAllPics()
+        viewModel.detailPic.observe(viewLifecycleOwner, { images ->
+            adapter = BookmarkAdapter(images, this)
+            recyclerView.adapter = adapter
+        })
     }
 
     private fun initEmptyBookmarkPicsFragment() {
@@ -77,10 +65,8 @@ class BookmarkPicsFragment : Fragment() {
             .commit()
     }
 
-    private fun initDetailFragment(photo: CuratedPicsResponse.Photo) {
-        val detailFragment = DetailFragment.newBookmarkInstance(photo)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.bookmarkContainer, detailFragment)
-            .commit()
+    override fun onImageClick(pic: CuratedPicsResponse.Photo) {
+        val detailBookmarkFragment = BookmarkDetailFragment.newBookmarkInstance(pic)
+        findNavController().navigate(R.id.bookmarkDetailFragment, detailBookmarkFragment.arguments)
     }
 }

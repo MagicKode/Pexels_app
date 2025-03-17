@@ -1,30 +1,23 @@
 package ru.myapp.pexels_app.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import ru.myapp.pexels_app.db.PexelsDatabase
 import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
-class DetailViewModel(application: Application) : AndroidViewModel(application) {
-    private var picsRepository: PicsRepositoryImpl
-    private var allPics: LiveData<MutableList<CuratedPicsResponse.Photo>>
+class DetailViewModel(private val picsRepository: PicsRepositoryImpl) : ViewModel() {
 
+    private var allPics = MutableLiveData<List<CuratedPicsResponse.Photo>>()
+    val detailPic: LiveData<List<CuratedPicsResponse.Photo>> get() = allPics
 
-    init {
-        val picDao = PexelsDatabase.getDatabase(application).getPicDao()
-        picsRepository = PicsRepositoryImpl(picDao)
-        allPics = MutableLiveData()
-    }
-
-    fun getAllPics(): List<CuratedPicsResponse.Photo> {
-        return picsRepository.getAllPics()
+    fun getAllPics() {
+        viewModelScope.launch {
+            allPics.value = picsRepository.getAllPics()
+        }
     }
 
     fun insertPic(pic: CuratedPicsResponse.Photo) {

@@ -13,8 +13,8 @@ interface PicDao {
     suspend fun insertPic(pic: CuratedPicsResponse.Photo)
 
     @Query("SELECT * FROM curated_photo ORDER BY id ASC")
-    fun getAllPics() : MutableList<CuratedPicsResponse.Photo>
+    suspend fun getAllPics() : List<CuratedPicsResponse.Photo>
 
-//    @Query("SELECT * FROM curated_photo WHERE id = :id")
-//    suspend fun getPicById(id: CuratedPicsResponse.Photo)
+    @Query("SELECT * FROM curated_photo WHERE id = :id")
+    suspend fun getPicById(id: Int): CuratedPicsResponse.Photo
 }

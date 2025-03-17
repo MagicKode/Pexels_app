@@ -5,11 +5,15 @@ import ru.myapp.pexels_app.model.CuratedPicsResponse
 
 class PicsRepositoryImpl(private val picDao: PicDao) : PicsRepository {
 
-    override fun getAllPics(): MutableList<CuratedPicsResponse.Photo> {
+    override suspend fun getAllPics(): List<CuratedPicsResponse.Photo> {
         return picDao.getAllPics()
     }
 
     override suspend fun insertPic(image: CuratedPicsResponse.Photo) {
         picDao.insertPic(image)
     }
+
+//    override suspend fun getPicById(id: Int): CuratedPicsResponse.Photo {
+//        return picDao.getPicById(id)
+//    }
 }
