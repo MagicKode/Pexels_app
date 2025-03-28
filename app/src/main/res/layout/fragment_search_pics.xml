@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".curated.presentation.CuratedPicsFragment">
+    tools:context=".search.presentation.SearchPicsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/viewPictures"
+        android:id="@+id/searchPics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/viewholder_pic" />
+        tools:listitem="@layout/viewholder_search_pic"/>
 </FrameLayout>

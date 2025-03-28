@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
+import ru.myapp.pexels_app.db.repository.impl.DetailCuratedPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
-class DetailViewModel(private val picsRepository: PicsRepositoryImpl) : ViewModel() {
+class DetailCuratedPicsViewModel(private val picsRepository: DetailCuratedPicsRepositoryImpl) : ViewModel() {
 
     private var allPics = MutableLiveData<List<CuratedPicsResponse.Photo>>()
     val detailPic: LiveData<List<CuratedPicsResponse.Photo>> get() = allPics

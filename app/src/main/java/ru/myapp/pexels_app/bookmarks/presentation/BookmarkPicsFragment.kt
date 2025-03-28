@@ -10,30 +10,27 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.adapter.BookmarkAdapter
 import ru.myapp.pexels_app.databinding.FragmentBookmarkPicsBinding
 import ru.myapp.pexels_app.db.PexelsDatabase
-import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
+import ru.myapp.pexels_app.db.repository.impl.DetailCuratedPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
-import ru.myapp.pexels_app.viewmodel.DetailViewModel
-import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
+import ru.myapp.pexels_app.viewmodel.DetailCuratedPicsViewModel
+import ru.myapp.pexels_app.viewmodel.viewmodelfactory.DetailCuratedViewModelFactory
 
 class BookmarkPicsFragment : Fragment(), BookmarkAdapter.OnImageClickListener {
 
     private lateinit var binding: FragmentBookmarkPicsBinding
     private lateinit var adapter: BookmarkAdapter
-    private lateinit var viewModel: DetailViewModel
+    private lateinit var viewModel: DetailCuratedPicsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
-        val picsRepository = PicsRepositoryImpl(picDao)
-        val factory = DetailViewModelFactory(picsRepository)
-        viewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+        val picsRepository = DetailCuratedPicsRepositoryImpl(picDao)
+        val factory = DetailCuratedViewModelFactory(picsRepository)
+        viewModel = ViewModelProvider(this, factory).get(DetailCuratedPicsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -50,7 +47,7 @@ class BookmarkPicsFragment : Fragment(), BookmarkAdapter.OnImageClickListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
 
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DetailCuratedPicsViewModel::class.java)
         viewModel.getAllPics()
         viewModel.detailPic.observe(viewLifecycleOwner, { images ->
             adapter = BookmarkAdapter(images, this)

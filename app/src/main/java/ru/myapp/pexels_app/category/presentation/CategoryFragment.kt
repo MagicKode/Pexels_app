@@ -50,10 +50,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
     }
 
 
-    override fun onItemClick(item: CategoriesResponse.Collection) {
+    override fun onTitleClick(item: CategoriesResponse.Collection) {
         //TODO put title in searchBar
     }
-
-
-
 }

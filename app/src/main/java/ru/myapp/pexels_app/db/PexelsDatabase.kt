@@ -11,13 +11,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import ru.myapp.pexels_app.db.dao.PicDao
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.DetailPicResponse
+import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.model.converter.Converter
 
 @Database(
     entities = [
         DetailPicResponse::class,
-        CuratedPicsResponse.Photo::class
-    ], version = 1
+        CuratedPicsResponse.Photo::class,
+        SearchPicsResponse.Photo::class
+    ], version = 2
 )
 @TypeConverters(Converter::class)
 abstract class PexelsDatabase : RoomDatabase() {

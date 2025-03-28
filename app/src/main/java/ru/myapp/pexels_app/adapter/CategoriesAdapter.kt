@@ -11,38 +11,27 @@ import ru.myapp.pexels_app.model.CategoriesResponse
 
 class CategoriesAdapter(
     private val headers: List<CategoriesResponse.Collection>,
-    private val listener: OnItemClickListener
-) : RecyclerView.Adapter<CategoriesAdapter.FeaturedCollectionsViewholder>() {
+    private val itemClick: OnItemClickListener
+) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewholder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
 
-    inner class FeaturedCollectionsViewholder(view: View) : RecyclerView.ViewHolder(view) {
-
+    inner class CategoryViewholder(view: View) : RecyclerView.ViewHolder(view) {
         val listItem: TextView = view.findViewById(R.id.categoryTitle)
-
-        fun bind(item: CategoriesResponse.Collection) {
-            listItem.setOnClickListener {
-                listener.onItemClick(item)
-                selectedPosition = adapterPosition
-                notifyDataSetChanged()
-            }
-        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            CategoriesAdapter.FeaturedCollectionsViewholder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesAdapter.CategoryViewholder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.viewholder_category, parent, false)
-
-        return FeaturedCollectionsViewholder(view)
+        return CategoryViewholder(view)
     }
 
-    override fun onBindViewHolder(
-        holder: CategoriesAdapter.FeaturedCollectionsViewholder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(holder: CategoriesAdapter.CategoryViewholder, position: Int) {
         val item = headers[position]
-        holder.listItem.text = item.title  //загрузка заголовка
+        holder.listItem.text = item.title
+        holder.listItem.setOnClickListener {
+            itemClick.onTitleClick(item)
+        }
 
 //        if (position == selectedPosition) {
 //            holder.itemView.setBackgroundColor(Color.RED)
@@ -51,8 +40,6 @@ class CategoriesAdapter(
 //            holder.itemView.setBackgroundResource(R.color.grey)
 //            holder.listItem.setTextColor(Color.BLACK)
 //        }
-
-        holder.bind(item) // нажатие на заголовок
     }
 
     override fun getItemCount(): Int = headers.size

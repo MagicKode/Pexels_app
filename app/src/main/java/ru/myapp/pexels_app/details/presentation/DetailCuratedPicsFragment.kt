@@ -16,30 +16,28 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentDetailBinding
 import ru.myapp.pexels_app.db.PexelsDatabase
-import ru.myapp.pexels_app.db.repository.PicsRepositoryImpl
+import ru.myapp.pexels_app.db.repository.impl.DetailCuratedPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.utils.Constant.ARG_IMAGE
-import ru.myapp.pexels_app.viewmodel.DetailViewModel
-import ru.myapp.pexels_app.viewmodel.DetailViewModelFactory
+import ru.myapp.pexels_app.viewmodel.DetailCuratedPicsViewModel
+import ru.myapp.pexels_app.viewmodel.viewmodelfactory.DetailCuratedViewModelFactory
 
-class DetailFragment : Fragment() {
+class DetailCuratedPicsFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
-    private lateinit var detailViewModel: DetailViewModel
+    private lateinit var detailCuratedPicsViewModel: DetailCuratedPicsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
-        val picsRepository = PicsRepositoryImpl(picDao)
-        val factory = DetailViewModelFactory(picsRepository)
-        detailViewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+        val picsRepository = DetailCuratedPicsRepositoryImpl(picDao)
+        val factory = DetailCuratedViewModelFactory(picsRepository)
+        detailCuratedPicsViewModel = ViewModelProvider(this, factory).get(DetailCuratedPicsViewModel::class.java)
 
     }
 
@@ -55,16 +53,13 @@ class DetailFragment : Fragment() {
         val photo = arguments?.getParcelable<CuratedPicsResponse.Photo>(ARG_IMAGE)
         photo?.let {
             Glide.with(this)
-                .asBitmap()
                 .load(photo.src.original)
                 .centerCrop()
-                .transition(BitmapTransitionOptions.withCrossFade(80))
                 .error(R.drawable.placeholder_light)
                 .placeholder(R.drawable.placeholder_light)
                 .into(imageView)
             photographerNameSurname.text = it.photographer
         }
-
         initBackStack()
 
         //download image to local phone gallery
@@ -116,7 +111,7 @@ class DetailFragment : Fragment() {
 
     private fun saveImageInDb(photo: CuratedPicsResponse.Photo) {
         binding.bookmarkBtn.setOnClickListener {
-            detailViewModel.insertPic(photo)
+            detailCuratedPicsViewModel.insertPic(photo)
             Toast.makeText(context, "Image saved", Toast.LENGTH_SHORT).show()
         }
     }
@@ -138,8 +133,8 @@ class DetailFragment : Fragment() {
     companion object {
         private val STORAGE_PERMISSION_CODE = 100
 
-        fun newInstance(photo: CuratedPicsResponse.Photo): DetailFragment {
-            val fragment = DetailFragment()
+        fun newInstance(photo: CuratedPicsResponse.Photo): DetailCuratedPicsFragment {
+            val fragment = DetailCuratedPicsFragment()
             val args = Bundle()
             args.putParcelable(ARG_IMAGE, photo)
             fragment.arguments = args

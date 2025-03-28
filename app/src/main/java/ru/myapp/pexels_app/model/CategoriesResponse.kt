@@ -11,6 +11,6 @@ data class CategoriesResponse(
         @SerializedName("id")
         val id: String?,
         @SerializedName("title")
-        val title: String?,
+        val title: String
     )
 }

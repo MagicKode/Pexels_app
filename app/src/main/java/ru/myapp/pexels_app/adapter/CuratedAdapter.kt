@@ -11,18 +11,16 @@ import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
 class CuratedAdapter(
-    private val pics: List<CuratedPicsResponse.Photo>,
+    private val pics: MutableList<CuratedPicsResponse.Photo>,
     private val itemClick: (CuratedPicsResponse.Photo) -> Unit
 ) : RecyclerView.Adapter<CuratedAdapter.CuratedViewHolder>() {
 
     inner class CuratedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.picture)
+        private val imageView: ImageView = itemView.findViewById(R.id.picture)
 
         fun bind(photo: CuratedPicsResponse.Photo) {
             Glide.with(itemView.context)
-                .asBitmap()
                 .load(photo.src.original)
-                .transition(BitmapTransitionOptions.withCrossFade(80))
                 .error(R.drawable.placeholder_light)
                 .placeholder(R.drawable.placeholder_light)
                 .into(imageView)

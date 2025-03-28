@@ -17,6 +17,12 @@
         <action
             android:id="@+id/action_homeFragment_to_baseActivity"
             app:destination="@id/baseActivity" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchPicsFragment"
+            app:destination="@id/searchPicsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookmarkFragment"
@@ -41,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/curatedPicsFragment"
-        android:name="ru.myapp.pexels_app.home.presentation.CuratedPicsFragment"
+        android:name="ru.myapp.pexels_app.curated.presentation.CuratedPicsFragment"
         android:label="fragment_curated"
         tools:layout="@layout/fragment_curated" >
         <action
@@ -53,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="ru.myapp.pexels_app.details.presentation.DetailFragment"
+        android:name="ru.myapp.pexels_app.details.presentation.DetailCuratedPicsFragment"
         android:label="DetailFragment" >
         <action
             android:id="@+id/action_detailFragment_to_homeFragment2"
@@ -85,4 +91,28 @@
             android:id="@+id/action_bookmarkDetailFragment_to_bookmarkFragment"
             app:destination="@id/bookmarkFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/searchPicsFragment"
+        android:name="ru.myapp.pexels_app.search.presentation.SearchPicsFragment"
+        android:label="fragment_search_pics"
+        tools:layout="@layout/fragment_search_pics" >
+        <action
+            android:id="@+id/action_searchPicsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_searchPicsFragment_to_detailSearchPicsFragment"
+            app:destination="@id/detailSearchPicsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="ru.myapp.pexels_app.search.presentation.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailSearchPicsFragment"
+        android:name="ru.myapp.pexels_app.details.presentation.DetailSearchPicsFragment"
+        android:label="DetailSearchPicsFragment" />
 </navigation>

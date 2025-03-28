@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ru.myapp.pexels_app.R
+import ru.myapp.pexels_app.search.presentation.SearchFragment
 import ru.myapp.pexels_app.category.presentation.CategoryFragment
+import ru.myapp.pexels_app.curated.presentation.CuratedPicsFragment
 import ru.myapp.pexels_app.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -25,24 +27,30 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initCategories()
-        initCuratedPics()
+        initSearchFragment()
+        initCategoryFragment()
+        initCuratedFragment()
 
     }
 
-    private fun initCategories() {
-        val categoryFragment = CategoryFragment()
+    private fun initCategoryFragment() {
+        openFragment(R.id.categoryContainer, CategoryFragment())
+    }
+
+    private fun initCuratedFragment() {
+        openFragment(R.id.picsContainer, CuratedPicsFragment())
+    }
+
+    private fun initSearchFragment() {
+        openFragment(R.id.searchBarContainer, SearchFragment())
+    }
+
+    private fun openFragment(idHolder: Int, f: Fragment) {
         childFragmentManager.beginTransaction()
-            .replace(R.id.categoryContainer, categoryFragment)
+            .replace(idHolder, f)
             .commit()
     }
-
-    private fun initCuratedPics() {
-        val curatedFragment = CuratedPicsFragment()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.picsContainer, curatedFragment)
-            .commit()
-    }
+}
 
 
 //    private fun initNoInternetConnection() {
@@ -51,10 +59,6 @@ class HomeFragment : Fragment() {
 //            .replace(R.id.noInternetContainer, noInternetFragment)
 //            .commit()
 //    }
-
-
-
-
 
 
 //    override fun onItemClick(item: CategoriesResponse.Collection) {
@@ -80,52 +84,3 @@ class HomeFragment : Fragment() {
 //            }.start()
 //        }
 //    }
-
-
-//    private fun initCategoryClickListener() {
-//        binding.apply {
-//            searchBarTxt.addTextChangedListener(object : TextWatcher {
-//                override fun beforeTextChanged(
-//                    s: CharSequence?,
-//                    start: Int,
-//                    count: Int,
-//                    after: Int
-//                ) {
-//                }
-//
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                    initSearchPics(s.toString())
-//                }
-//
-//                override fun afterTextChanged(s: Editable?) {
-//                    if (s.toString().isNotEmpty()) {
-//                        cleanTxtBtn.visibility = View.VISIBLE
-//                        initSearchPics(s.toString())
-////                        initProgressBar()
-//                    } else {
-//                        cleanTxtBtn.visibility = View.GONE
-//                        initCuratedPics()
-//                    }
-//                }
-//            })
-//            cleanTxtBtn.setOnClickListener {
-//                searchBarTxt.text?.clear()
-//            }
-//        }
-//    }
-
-
-//    private fun initSearchPics(query: String) {
-//        binding.apply {
-//            progressBar.visibility = View.VISIBLE
-//
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val response = RetrofitClient.instance.searchPics(query, 1, 30, API_KEY)
-//                withContext(Dispatchers.Main) {
-//                    viewPictures.layoutManager = GridLayoutManager(context, 2)
-//                    viewPictures.adapter = SearchPicsAdapter(response.photos)
-//                }
-//            }
-//        }
-//    }
-}
