@@ -35,7 +35,29 @@ data class CuratedPicsResponse(
             @ColumnInfo(name = "original")
             @SerializedName("original")
             val original: String,
-        )
+        ) : Parcelable {
+            constructor(parcel: Parcel) : this(
+                parcel.readString() ?: ""
+            )
+
+            override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(original)
+            }
+
+            override fun describeContents(): Int {
+                return 0
+            }
+
+            companion object CREATOR : Parcelable.Creator<Src> {
+                override fun createFromParcel(parcel: Parcel): Src {
+                    return Src(parcel)
+                }
+
+                override fun newArray(size: Int): Array<Src?> {
+                    return arrayOfNulls(size)
+                }
+            }
+        }
 
         constructor(parcel: Parcel) : this(
             parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -49,7 +71,10 @@ data class CuratedPicsResponse(
         }
 
         override fun writeToParcel(dest: Parcel, flags: Int) {
-            TODO("Not yet implemented")
+            dest.writeValue(id)
+            dest.writeString(photographer)
+            dest.writeParcelable(src, flags)
+            dest.writeString(url)
         }
 
         companion object CREATOR : Parcelable.Creator<Photo> {

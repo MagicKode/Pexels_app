@@ -19,28 +19,27 @@ import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.FragmentSearchBinding
 import ru.myapp.pexels_app.db.repository.impl.SearchPicsRepositoryImpl
 import ru.myapp.pexels_app.curated.presentation.CuratedPicsFragment
+import ru.myapp.pexels_app.db.repository.impl.CategoryPicsRepositoryImpl
 import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.utils.Constant.API_KEY
+import ru.myapp.pexels_app.viewmodel.CategoryViewModel
 import ru.myapp.pexels_app.viewmodel.SearchViewModel
+import ru.myapp.pexels_app.viewmodel.viewmodelfactory.CategoryViewModelFactory
 import ru.myapp.pexels_app.viewmodel.viewmodelfactory.SearchViewModelFactory
 
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var viewModel: SearchViewModel
+    private lateinit var categoryViewModel: CategoryViewModel
     private lateinit var adapter: SearchPicsAdapter
     private val picsList = mutableListOf<SearchPicsResponse.Photo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val api = RetrofitClient.instance
-        val repository = SearchPicsRepositoryImpl(api)
-        val factory = SearchViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
-
-        adapter = SearchPicsAdapter(picsList) { photo ->
-
-        }
+        setupViewModel()
+        setupCategoryViewModel()
+        adapter = SearchPicsAdapter(picsList) {}
     }
 
     override fun onCreateView(
@@ -54,7 +53,29 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSearchPicsList()
+
+        binding.apply {
+            categoryViewModel.categoryTitle.observe(viewLifecycleOwner) { searchText ->
+                searchBarTxt.setText(searchText)
+                searchBarTxt.setSelection(searchText.length)
+            }
+        }
     }
+
+    private fun setupViewModel() {
+        val api = RetrofitClient.instance
+        val repository = SearchPicsRepositoryImpl(api)
+        val factory = SearchViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
+    }
+
+    private fun setupCategoryViewModel() {
+        val api = RetrofitClient.instance
+        val categoryRepository = CategoryPicsRepositoryImpl(api)
+        val categoryFactory = CategoryViewModelFactory(categoryRepository)
+        categoryViewModel = ViewModelProvider(requireActivity(), categoryFactory).get(CategoryViewModel::class.java)
+    }
+
 
     private fun initSearchPicsList() {
         binding.apply {

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CategoriesResponse(
     @SerializedName("collections")
-    val collections: List<Collection>
+    val collections: MutableList<Collection>
 ) {
     data class Collection(
         @SerializedName("id")

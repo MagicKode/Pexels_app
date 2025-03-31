@@ -34,14 +34,14 @@ class DetailCuratedPicsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
-        val picsRepository = DetailCuratedPicsRepositoryImpl(picDao)
-        val factory = DetailCuratedViewModelFactory(picsRepository)
-        detailCuratedPicsViewModel = ViewModelProvider(this, factory).get(DetailCuratedPicsViewModel::class.java)
-
+        setupViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -63,28 +63,19 @@ class DetailCuratedPicsFragment : Fragment() {
         initBackStack()
 
         //download image to local phone gallery
-        binding.apply {
-            downloadBtn.setOnClickListener {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    initDownloadImage()
-                    Toast.makeText(context, "Downloaded successful", Toast.LENGTH_LONG).show()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        STORAGE_PERMISSION_CODE
-                    )
-                }
-            }
-        }
+        initDownloadImageToPhone()
 
         if (photo != null) {
             saveImageInDb(photo)
         }
+    }
+
+    private fun setupViewModel() {
+        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
+        val picsRepository = DetailCuratedPicsRepositoryImpl(picDao)
+        val factory = DetailCuratedViewModelFactory(picsRepository)
+        detailCuratedPicsViewModel =
+            ViewModelProvider(this, factory).get(DetailCuratedPicsViewModel::class.java)
     }
 
     private fun initBackStack() {
@@ -106,6 +97,27 @@ class DetailCuratedPicsFragment : Fragment() {
             val request = DownloadManager.Request(uri)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "image.jpg")
             downloadManager.enqueue(request)
+        }
+    }
+
+    private fun initDownloadImageToPhone() {
+        binding.apply {
+            downloadBtn.setOnClickListener {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    initDownloadImage()
+                    Toast.makeText(context, "Downloaded successful", Toast.LENGTH_LONG).show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        STORAGE_PERMISSION_CODE
+                    )
+                }
+            }
         }
     }
 

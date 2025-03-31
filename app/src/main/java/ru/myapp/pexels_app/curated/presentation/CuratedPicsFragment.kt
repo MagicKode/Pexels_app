@@ -29,10 +29,7 @@ class CuratedPicsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val api = RetrofitClient.instance
-        val repository = CuratedPicsRepositoryImpl(api)
-        val factory = CuratedViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(CuratedViewModel::class)
+        setupViewmodel()
     }
 
     override fun onCreateView(
@@ -51,31 +48,16 @@ class CuratedPicsFragment : Fragment() {
         observeViewModel()
     }
 
-//    private fun initCuratedPics() {
-//        binding.apply {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                try {
-//                    val response = RetrofitClient.instance.getCuratedPicList(1, 30, API_KEY)
-//                    withContext(Dispatchers.Main) {
-//                        viewPictures.layoutManager =
-//                            StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-//                        viewPictures.adapter = adapter
-//
-//                        picsList.clear()
-//                        picsList.addAll(response.photos)
-//                        adapter.notifyDataSetChanged()
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e("CuratedPicsFragment", "Exception: ${e.message}")
-//                }
-//            }
-//        }
-//    }
+    private fun setupViewmodel() {
+        val api = RetrofitClient.instance
+        val repository = CuratedPicsRepositoryImpl(api)
+        val factory = CuratedViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(CuratedViewModel::class)
+    }
 
     private fun initCuratedPics() {
         viewModel.initCuratedPics()
     }
-
 
     private fun setupRecyclerView() {
         binding.apply {
@@ -86,7 +68,10 @@ class CuratedPicsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.curatedPicList.observe(viewLifecycleOwner) { photos ->
-            Log.d("CuratedPicsFragment", "Received photos: $photos") // Логирование полученных данных
+            Log.d(
+                "CuratedPicsFragment",
+                "Received photos: $photos"
+            ) // Логирование полученных данных
 
             picsList.clear()
             picsList.addAll(photos ?: emptyList())
@@ -94,26 +79,8 @@ class CuratedPicsFragment : Fragment() {
         }
     }
 
-//    private fun navigateToSearchPicsFragment(query: String) {
-//        val fragment = CuratedPicsFragment.newInstance(query)
-//        parentFragmentManager.beginTransaction()
-//            .replace(R.id.picsContainer, fragment)
-//            .commit()
-//    }
-
     private fun initDetailFragment(photo: CuratedPicsResponse.Photo) {
         val detailCuratedPicsFragment = DetailCuratedPicsFragment.newInstance(photo)
         findNavController().navigate(R.id.detailFragment, detailCuratedPicsFragment.arguments)
     }
-
-//    companion object {
-//        fun instance(): CuratedPicsFragment {
-//            val fragment = CuratedPicsFragment()
-//            val args = Bundle().apply {
-//                putString("query", query)
-//            }
-//            fragment.arguments = args
-//            return fragment
-//        }
-//    }
 }

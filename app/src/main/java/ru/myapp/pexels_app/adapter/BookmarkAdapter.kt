@@ -7,19 +7,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 
 class BookmarkAdapter(
-    private val picList: List<CuratedPicsResponse.Photo>,
-    private val itemClick: OnImageClickListener
-) :
-    RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder>() {
-
-    interface OnImageClickListener {
-        fun onImageClick(pic: CuratedPicsResponse.Photo)
-    }
+    private var picList: List<CuratedPicsResponse.Photo>,
+    private val itemClick: (CuratedPicsResponse.Photo) -> Unit
+) : RecyclerView.Adapter<BookmarkAdapter.BookmarkViewHolder>() {
 
     inner class BookmarkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.picFromDb)
@@ -37,6 +33,7 @@ class BookmarkAdapter(
         Glide.with(holder.itemView.context)
             .asBitmap()
             .load(photo.src.original)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .transition(BitmapTransitionOptions.withCrossFade(80))
             .error(R.drawable.placeholder_light)
             .placeholder(R.drawable.placeholder_light)
@@ -44,9 +41,14 @@ class BookmarkAdapter(
         holder.photographerNameSurname.text = photo.photographer
 
         holder.imageView.setOnClickListener {
-            itemClick.onImageClick(photo)
+            itemClick(photo)
         }
     }
 
     override fun getItemCount() = picList.size
+
+    fun updateList(newPhotos: List<CuratedPicsResponse.Photo>) {
+        picList = newPhotos
+        notifyDataSetChanged()
+    }
 }

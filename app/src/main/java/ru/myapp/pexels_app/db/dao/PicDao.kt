@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import ru.myapp.pexels_app.model.CuratedPicsResponse
 import ru.myapp.pexels_app.model.SearchPicsResponse
 
@@ -18,6 +17,4 @@ interface PicDao {
 
     @Query("SELECT * FROM curated_photo ORDER BY id ASC")
     suspend fun getAllPics() : List<CuratedPicsResponse.Photo>
-
-
 }

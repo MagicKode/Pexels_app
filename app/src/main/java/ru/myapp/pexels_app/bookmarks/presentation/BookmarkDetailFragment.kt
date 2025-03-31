@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.databinding.FragmentBookmarkDetailBinding
@@ -40,7 +41,7 @@ class BookmarkDetailFragment : Fragment() {
         Glide.with(this)
             .asBitmap()
             .load(photo.src.original)
-            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .transition(BitmapTransitionOptions.withCrossFade(80))
             .error(R.drawable.placeholder_light)
             .placeholder(R.drawable.placeholder_light)

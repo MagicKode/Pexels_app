@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName
 data class SearchPicsResponse(
     @ColumnInfo(name = "photos")
     @SerializedName("photos")
-    val photos: List<Photo>
+    val photos: MutableList<Photo>
 ) {
     @Entity(tableName = "search_photo")
     data class Photo(

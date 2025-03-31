@@ -1,5 +1,9 @@
 package ru.myapp.pexels_app.home.presentation
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,10 +31,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initSearchFragment()
-        initCategoryFragment()
-        initCuratedFragment()
+        binding.apply {
+            initSearchFragment()
+            progressBar.visibility = View.VISIBLE
+            if (isInternetAvailable()) {
 
+                initCategoryFragment()
+                initCuratedFragment()
+                progressBar.visibility = View.GONE
+            } else {
+                initNoInternetFragment()
+            }
+        }
     }
 
     private fun initCategoryFragment() {
@@ -45,42 +57,32 @@ class HomeFragment : Fragment() {
         openFragment(R.id.searchBarContainer, SearchFragment())
     }
 
+    private fun initNoInternetFragment() {
+        openFragment(R.id.noInternetContainer, NoInternetFragment())
+    }
+
     private fun openFragment(idHolder: Int, f: Fragment) {
         childFragmentManager.beginTransaction()
             .replace(idHolder, f)
             .commit()
     }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork?.let {
+                connectivityManager.getNetworkCapabilities(it)
+            }
+            return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        } else {
+            val networkInfo = connectivityManager.activeNetworkInfo
+            return networkInfo != null && networkInfo.isConnected
+        }
+    }
+
 }
 
 
-//    private fun initNoInternetConnection() {
-//        val noInternetFragment = NoInternetFragment()
-//        childFragmentManager.beginTransaction()
-//            .replace(R.id.noInternetContainer, noInternetFragment)
-//            .commit()
-//    }
 
 
-//    override fun onItemClick(item: CategoriesResponse.Collection) {
-//        binding.apply {
-//            searchBarTxt.setText(item.title)
-//        }
-//    }
-
-
-//    private fun initProgressBar() {
-//        binding.apply {
-//            Thread {
-//                progressBar.visibility = View.VISIBLE
-//                for (i in 0..100) {
-//                    Thread.sleep(50)
-//                    handler.post {
-//                        progressBar.progress = i
-//                    }
-//                }
-////                handler.post {
-////                    mainContent.progressBar.visibility = View.GONE
-////                }
-//            }.start()
-//        }
-//    }

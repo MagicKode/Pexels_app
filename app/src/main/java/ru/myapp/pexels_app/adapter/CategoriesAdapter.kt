@@ -6,40 +6,29 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.myapp.pexels_app.R
-import ru.myapp.pexels_app.adapter.listener.OnItemClickListener
 import ru.myapp.pexels_app.model.CategoriesResponse
 
 class CategoriesAdapter(
     private val headers: List<CategoriesResponse.Collection>,
-    private val itemClick: OnItemClickListener
-) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewholder>() {
+    private val itemClick: (CategoriesResponse.Collection) -> Unit
+) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
 
-    private var selectedPosition = RecyclerView.NO_POSITION
-
-    inner class CategoryViewholder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val listItem: TextView = view.findViewById(R.id.categoryTitle)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesAdapter.CategoryViewholder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesAdapter.CategoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.viewholder_category, parent, false)
-        return CategoryViewholder(view)
+        return CategoryViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CategoriesAdapter.CategoryViewholder, position: Int) {
+    override fun onBindViewHolder(holder: CategoriesAdapter.CategoryViewHolder, position: Int) {
         val item = headers[position]
         holder.listItem.text = item.title
         holder.listItem.setOnClickListener {
-            itemClick.onTitleClick(item)
+            itemClick(item)
         }
-
-//        if (position == selectedPosition) {
-//            holder.itemView.setBackgroundColor(Color.RED)
-//            holder.listItem.setTextColor(Color.WHITE)
-//        } else {
-//            holder.itemView.setBackgroundResource(R.color.grey)
-//            holder.listItem.setTextColor(Color.BLACK)
-//        }
     }
 
     override fun getItemCount(): Int = headers.size

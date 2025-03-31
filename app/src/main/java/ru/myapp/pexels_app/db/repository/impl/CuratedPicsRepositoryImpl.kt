@@ -10,5 +10,4 @@ class CuratedPicsRepositoryImpl(private val api: PexelsApi): CuratedPicsReposito
         val response = api.getCuratedPicList(1, 30, API_KEY)
         return response.photos
     }
-
 }

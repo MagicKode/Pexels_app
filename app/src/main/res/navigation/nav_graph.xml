@@ -78,6 +78,9 @@
         <action
             android:id="@+id/action_bookmarkPicsFragment_to_bookmarkDetailFragment"
             app:destination="@id/bookmarkDetailFragment" />
+        <action
+            android:id="@+id/action_bookmarkPicsFragment_to_emptyBookmarkFragment"
+            app:destination="@id/emptyBookmarkFragment" />
     </fragment>
     <activity
         android:id="@+id/baseActivity"
@@ -115,4 +118,8 @@
         android:id="@+id/detailSearchPicsFragment"
         android:name="ru.myapp.pexels_app.details.presentation.DetailSearchPicsFragment"
         android:label="DetailSearchPicsFragment" />
+    <fragment
+        android:id="@+id/emptyBookmarkFragment"
+        android:name="ru.myapp.pexels_app.bookmarks.presentation.EmptyBookmarkFragment"
+        android:label="EmptyBookmarkFragment" />
 </navigation>

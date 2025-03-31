@@ -33,10 +33,7 @@ class DetailSearchPicsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
-        val picsRepository = DetailSearchPicsRepositoryImpl(picDao)
-        val factory = DetailSearchViewModelFactory(picsRepository)
-        detailSearchPicsViewModel = ViewModelProvider(this, factory).get(DetailSearchPicsViewModel::class.java)
+        setupViewModel()
     }
 
     override fun onCreateView(
@@ -64,28 +61,19 @@ class DetailSearchPicsFragment : Fragment() {
         initBackStack()
 
         //download image to local phone gallery
-        binding.apply {
-            downloadBtn.setOnClickListener {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    initDownloadImage()
-                    Toast.makeText(context, "Downloaded successful", Toast.LENGTH_LONG).show()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        STORAGE_PERMISSION_CODE
-                    )
-                }
-            }
-        }
+        initDownImageToPhone()
 
         if (photo != null) {
             saveImageInDb(photo)
         }
+    }
+
+    private fun setupViewModel() {
+        val picDao = PexelsDatabase.getDatabase(requireContext()).getPicDao()
+        val picsRepository = DetailSearchPicsRepositoryImpl(picDao)
+        val factory = DetailSearchViewModelFactory(picsRepository)
+        detailSearchPicsViewModel =
+            ViewModelProvider(this, factory).get(DetailSearchPicsViewModel::class.java)
     }
 
     private fun initBackStack() {
@@ -107,6 +95,27 @@ class DetailSearchPicsFragment : Fragment() {
             val request = DownloadManager.Request(uri)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "image.jpg")
             downloadManager.enqueue(request)
+        }
+    }
+
+    private fun initDownImageToPhone() {
+        binding.apply {
+            downloadBtn.setOnClickListener {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    initDownloadImage()
+                    Toast.makeText(context, "Downloaded successful", Toast.LENGTH_LONG).show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        STORAGE_PERMISSION_CODE
+                    )
+                }
+            }
         }
     }
 

@@ -14,8 +14,10 @@ import ru.myapp.pexels_app.details.presentation.DetailSearchPicsFragment
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.adapter.SearchPicsAdapter
 import ru.myapp.pexels_app.api.RetrofitClient
+import ru.myapp.pexels_app.category.presentation.CategoryFragment
 import ru.myapp.pexels_app.databinding.FragmentSearchPicsBinding
 import ru.myapp.pexels_app.db.repository.impl.SearchPicsRepositoryImpl
+import ru.myapp.pexels_app.model.CategoriesResponse
 import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.viewmodel.SearchViewModel
 import ru.myapp.pexels_app.viewmodel.viewmodelfactory.SearchViewModelFactory
@@ -29,13 +31,14 @@ class SearchPicsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val api = RetrofitClient.instance
-        val repository = SearchPicsRepositoryImpl(api)
-        val factory = SearchViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
+        setupViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSearchPicsBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -48,10 +51,21 @@ class SearchPicsFragment : Fragment() {
         observeViewModel()
 
         val query = arguments?.getString("query") ?: ""
+        val searchResult = viewModel.initSearchPics(query)
         if (query.isNotEmpty()) {
             viewModel.initSearchPics(query)
+        } else if (query.isNotEmpty() && searchResult == null) {
+            initNoResultFoundFragment()
         }
     }
+
+    private fun setupViewModel() {
+        val api = RetrofitClient.instance
+        val repository = SearchPicsRepositoryImpl(api)
+        val factory = SearchViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
+    }
+
 
     private fun setupRecyclerView() {
         binding.apply {
@@ -72,6 +86,14 @@ class SearchPicsFragment : Fragment() {
     private fun initDetailFragment(photo: SearchPicsResponse.Photo) {
         val detailFragment = DetailSearchPicsFragment.newSearchInstance(photo)
         findNavController().navigate(R.id.detailSearchPicsFragment, detailFragment.arguments)
+    }
+
+    private fun initNoResultFoundFragment() {
+        Log.d("BookmarkPicsFragment", "Replacing fragment with EmptyBookmarkFragment")
+        val noResultFoundFragment = NoResultFoundFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.picsContainer, noResultFoundFragment)
+            .commit()
     }
 
     companion object {

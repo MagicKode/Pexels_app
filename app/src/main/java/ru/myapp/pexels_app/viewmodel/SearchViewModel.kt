@@ -5,15 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.db.repository.impl.SearchPicsRepositoryImpl
 import ru.myapp.pexels_app.model.SearchPicsResponse
 
 class SearchViewModel(private val repository: SearchPicsRepositoryImpl) : ViewModel() {
-    private val _searchPhotos = MutableLiveData<List<SearchPicsResponse.Photo>?>()
-    val searchPhotos: LiveData<List<SearchPicsResponse.Photo>?> get() = _searchPhotos
+    private val _searchPhotos = MutableLiveData<MutableList<SearchPicsResponse.Photo>?>()
+    val searchPhotos: LiveData<MutableList<SearchPicsResponse.Photo>?> get() = _searchPhotos
 
     fun initSearchPics(query: String) {
         viewModelScope.launch {

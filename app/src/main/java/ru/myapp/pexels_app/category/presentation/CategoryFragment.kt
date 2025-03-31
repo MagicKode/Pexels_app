@@ -1,56 +1,73 @@
 package ru.myapp.pexels_app.category.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.myapp.pexels_app.adapter.CategoriesAdapter
-import ru.myapp.pexels_app.adapter.listener.OnItemClickListener
 import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.FragmentCategoryBinding
+import ru.myapp.pexels_app.db.repository.impl.CategoryPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CategoriesResponse
-import ru.myapp.pexels_app.utils.Constant.API_KEY
+import ru.myapp.pexels_app.viewmodel.CategoryViewModel
+import ru.myapp.pexels_app.viewmodel.viewmodelfactory.CategoryViewModelFactory
 
-class CategoryFragment : Fragment(), OnItemClickListener {
+class CategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoryBinding
+    private lateinit var viewModel: CategoryViewModel
+    private lateinit var adapter: CategoriesAdapter
+    private val categories = mutableListOf<CategoriesResponse.Collection>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupViewModel()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentCategoryBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initCategories()
+        adapter = CategoriesAdapter(categories) { category ->
+            viewModel.setSearchText(category)
+        }
+        initCategoryPics()
+        setupRecyclerView()
+        observeViewModel()
     }
 
-    private fun initCategories() {
+    private fun setupViewModel() {
+        val api = RetrofitClient.instance
+        val repository = CategoryPicsRepositoryImpl(api)
+        val factory = CategoryViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(), factory).get(CategoryViewModel::class)
+    }
+
+    private fun initCategoryPics() {
+        viewModel.initSearchCategories()
+    }
+
+    private fun setupRecyclerView() {
         binding.apply {
-            CoroutineScope(Dispatchers.IO).launch {
-                val response = RetrofitClient.instance.getCategories(1, 7, API_KEY)
-                withContext(Dispatchers.Main) {
-                    viewCategory.layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    viewCategory.adapter =
-                        CategoriesAdapter(response.collections, this@CategoryFragment)
-                }
-            }
+            viewCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            viewCategory.adapter = adapter
         }
     }
 
+    private fun observeViewModel() {
+        viewModel.categoryText.observe(viewLifecycleOwner) { category ->
+            Log.d("CategoriesPicsFragment", "Received photos: $category") // Логирование полученных данных
 
-    override fun onTitleClick(item: CategoriesResponse.Collection) {
-        //TODO put title in searchBar
+            categories.clear()
+            categories.addAll(category ?: emptyList())
+            adapter.notifyDataSetChanged()
+        }
     }
 }
