@@ -10,10 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ru.myapp.pexels_app.R
-import ru.myapp.pexels_app.search.presentation.SearchFragment
 import ru.myapp.pexels_app.category.presentation.CategoryFragment
 import ru.myapp.pexels_app.curated.presentation.CuratedPicsFragment
 import ru.myapp.pexels_app.databinding.FragmentHomeBinding
+import ru.myapp.pexels_app.search.presentation.SearchFragment
 
 class HomeFragment : Fragment() {
 
@@ -35,10 +35,8 @@ class HomeFragment : Fragment() {
             initSearchFragment()
             progressBar.visibility = View.VISIBLE
             if (isInternetAvailable()) {
-
                 initCategoryFragment()
                 initCuratedFragment()
-                progressBar.visibility = View.GONE
             } else {
                 initNoInternetFragment()
             }
@@ -80,9 +78,4 @@ class HomeFragment : Fragment() {
             return networkInfo != null && networkInfo.isConnected
         }
     }
-
 }
-
-
-
-
