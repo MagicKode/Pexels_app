@@ -5,11 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.db.repository.impl.SearchPicsRepositoryImpl
 import ru.myapp.pexels_app.model.SearchPicsResponse
+import javax.inject.Inject
 
-class SearchViewModel(private val repository: SearchPicsRepositoryImpl) : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(private val repository: SearchPicsRepositoryImpl) : ViewModel() {
     private val _searchPhotos = MutableLiveData<MutableList<SearchPicsResponse.Photo>?>()
     val searchPhotos: LiveData<MutableList<SearchPicsResponse.Photo>?> get() = _searchPhotos
 

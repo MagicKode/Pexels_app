@@ -3,18 +3,19 @@ package ru.myapp.pexels_app.home.presentation
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.category.presentation.CategoryFragment
 import ru.myapp.pexels_app.curated.presentation.CuratedPicsFragment
 import ru.myapp.pexels_app.databinding.FragmentHomeBinding
 import ru.myapp.pexels_app.search.presentation.SearchFragment
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
@@ -68,14 +69,9 @@ class HomeFragment : Fragment() {
     private fun isInternetAvailable(): Boolean {
         val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val networkCapabilities = connectivityManager.activeNetwork?.let {
-                connectivityManager.getNetworkCapabilities(it)
-            }
-            return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-        } else {
-            val networkInfo = connectivityManager.activeNetworkInfo
-            return networkInfo != null && networkInfo.isConnected
+        val networkCapabilities = connectivityManager.activeNetwork?.let {
+            connectivityManager.getNetworkCapabilities(it)
         }
+        return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 }

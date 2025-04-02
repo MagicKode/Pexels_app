@@ -5,11 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.db.repository.impl.CuratedPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CuratedPicsResponse
+import javax.inject.Inject
 
-class CuratedViewModel(private val repository: CuratedPicsRepositoryImpl): ViewModel() {
+@HiltViewModel
+class CuratedViewModel @Inject constructor(private val repository: CuratedPicsRepositoryImpl) : ViewModel() {
     private val _curatedPicsList = MutableLiveData<List<CuratedPicsResponse.Photo>?>()
     val curatedPicList: LiveData<List<CuratedPicsResponse.Photo>?> get() = _curatedPicsList
 

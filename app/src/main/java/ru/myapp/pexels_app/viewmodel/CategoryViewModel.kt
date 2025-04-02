@@ -5,11 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.myapp.pexels_app.db.repository.impl.CategoryPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CategoriesResponse
+import javax.inject.Inject
 
-class CategoryViewModel(private val repository: CategoryPicsRepositoryImpl): ViewModel() {
+@HiltViewModel
+class CategoryViewModel @Inject constructor(private val repository: CategoryPicsRepositoryImpl): ViewModel() {
     private val _categoryText = MutableLiveData<MutableList<CategoriesResponse.Collection>?>()
     val categoryText: LiveData<MutableList<CategoriesResponse.Collection>?> get() = _categoryText
 

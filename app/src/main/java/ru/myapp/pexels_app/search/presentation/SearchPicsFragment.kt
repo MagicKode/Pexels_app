@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ru.myapp.pexels_app.details.presentation.DetailSearchPicsFragment
 import ru.myapp.pexels_app.R
 import ru.myapp.pexels_app.adapter.SearchPicsAdapter
@@ -22,17 +24,13 @@ import ru.myapp.pexels_app.model.SearchPicsResponse
 import ru.myapp.pexels_app.viewmodel.SearchViewModel
 import ru.myapp.pexels_app.viewmodel.viewmodelfactory.SearchViewModelFactory
 
+@AndroidEntryPoint
 class SearchPicsFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchPicsBinding
     private lateinit var adapter: SearchPicsAdapter
-    private lateinit var viewModel: SearchViewModel
     private val picsList = mutableListOf<SearchPicsResponse.Photo>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupViewModel()
-    }
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,14 +56,6 @@ class SearchPicsFragment : Fragment() {
             initNoResultFoundFragment()
         }
     }
-
-    private fun setupViewModel() {
-        val api = RetrofitClient.instance
-        val repository = SearchPicsRepositoryImpl(api)
-        val factory = SearchViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
-    }
-
 
     private fun setupRecyclerView() {
         binding.apply {

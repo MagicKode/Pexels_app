@@ -6,27 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import ru.myapp.pexels_app.adapter.CategoriesAdapter
-import ru.myapp.pexels_app.api.RetrofitClient
 import ru.myapp.pexels_app.databinding.FragmentCategoryBinding
-import ru.myapp.pexels_app.db.repository.impl.CategoryPicsRepositoryImpl
 import ru.myapp.pexels_app.model.CategoriesResponse
 import ru.myapp.pexels_app.viewmodel.CategoryViewModel
-import ru.myapp.pexels_app.viewmodel.viewmodelfactory.CategoryViewModelFactory
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoryBinding
-    private lateinit var viewModel: CategoryViewModel
     private lateinit var adapter: CategoriesAdapter
     private val categories = mutableListOf<CategoriesResponse.Collection>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupViewModel()
-    }
+    private val viewModel: CategoryViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentCategoryBinding.inflate(layoutInflater, container, false)
@@ -42,14 +38,6 @@ class CategoryFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
     }
-
-    private fun setupViewModel() {
-        val api = RetrofitClient.instance
-        val repository = CategoryPicsRepositoryImpl(api)
-        val factory = CategoryViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(CategoryViewModel::class)
-    }
-
     private fun initCategoryPics() {
         viewModel.initSearchCategories()
     }

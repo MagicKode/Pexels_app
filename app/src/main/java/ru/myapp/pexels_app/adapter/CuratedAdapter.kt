@@ -1,12 +1,10 @@
 package ru.myapp.pexels_app.adapter
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -31,7 +29,8 @@ class CuratedAdapter(
             Glide.with(itemView.context)
                 .asBitmap()
                 .load(photo.src.original)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(false)
                 .transition(BitmapTransitionOptions.withCrossFade(80))
                 .error(R.drawable.placeholder_light)
                 .placeholder(R.drawable.placeholder_light)

@@ -52,6 +52,7 @@ class DetailSearchPicsFragment : Fragment() {
         photo?.let {
             Glide.with(this)
                 .load(photo.src.original)
+                .skipMemoryCache(false)
                 .centerCrop()
                 .error(R.drawable.placeholder_light)
                 .placeholder(R.drawable.placeholder_light)
