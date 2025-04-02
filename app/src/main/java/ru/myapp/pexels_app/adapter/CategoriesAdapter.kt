@@ -15,6 +15,13 @@ class CategoriesAdapter(
 
     inner class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val listItem: TextView = view.findViewById(R.id.categoryTitle)
+
+        fun bind(item: CategoriesResponse.Collection) {
+            listItem.text = item.title
+            listItem.setOnClickListener {
+                itemClick(item)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesAdapter.CategoryViewHolder {
@@ -24,11 +31,8 @@ class CategoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoriesAdapter.CategoryViewHolder, position: Int) {
-        val item = headers[position]
-        holder.listItem.text = item.title
-        holder.listItem.setOnClickListener {
-            itemClick(item)
-        }
+        holder.bind(headers[position])
+
     }
 
     override fun getItemCount(): Int = headers.size

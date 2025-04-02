@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,18 +29,15 @@ import ru.myapp.pexels_app.viewmodel.SearchViewModel
 import ru.myapp.pexels_app.viewmodel.viewmodelfactory.CategoryViewModelFactory
 import ru.myapp.pexels_app.viewmodel.viewmodelfactory.SearchViewModelFactory
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
-
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var viewModel: SearchViewModel
-    private lateinit var categoryViewModel: CategoryViewModel
     private lateinit var adapter: SearchPicsAdapter
     private val picsList = mutableListOf<SearchPicsResponse.Photo>()
+    private val categoryViewModel: CategoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel()
-        setupCategoryViewModel()
         adapter = SearchPicsAdapter(picsList) {}
     }
 
@@ -52,6 +51,7 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initSearchPicsList()
 
         binding.apply {
@@ -61,21 +61,6 @@ class SearchFragment : Fragment() {
             }
         }
     }
-
-    private fun setupViewModel() {
-        val api = RetrofitClient.instance
-        val repository = SearchPicsRepositoryImpl(api)
-        val factory = SearchViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), factory).get(SearchViewModel::class.java)
-    }
-
-    private fun setupCategoryViewModel() {
-        val api = RetrofitClient.instance
-        val categoryRepository = CategoryPicsRepositoryImpl(api)
-        val categoryFactory = CategoryViewModelFactory(categoryRepository)
-        categoryViewModel = ViewModelProvider(requireActivity(), categoryFactory).get(CategoryViewModel::class.java)
-    }
-
 
     private fun initSearchPicsList() {
         binding.apply {

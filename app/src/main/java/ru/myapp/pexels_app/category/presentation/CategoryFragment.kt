@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class CategoryFragment : Fragment() {
-
     private lateinit var binding: FragmentCategoryBinding
     private lateinit var adapter: CategoriesAdapter
     private val categories = mutableListOf<CategoriesResponse.Collection>()
@@ -57,5 +56,8 @@ class CategoryFragment : Fragment() {
             categories.addAll(category ?: emptyList())
             adapter.notifyDataSetChanged()
         }
+//        viewModel.categoryTitle.observe(viewLifecycleOwner) { title ->
+//            viewModel.setSearchText)
+//        }
     }
 }

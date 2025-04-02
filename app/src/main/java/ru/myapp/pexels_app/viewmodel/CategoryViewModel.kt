@@ -31,6 +31,7 @@ class CategoryViewModel @Inject constructor(private val repository: CategoryPics
     }
 
     fun setSearchText(text: CategoriesResponse.Collection) {
+        Log.d("CategoryViewModel", "Setting search text: ${text.title}")
         _categoryTitle.value = text.title
     }
 }
